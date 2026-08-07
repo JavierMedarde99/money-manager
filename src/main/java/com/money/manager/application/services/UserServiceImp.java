@@ -17,15 +17,17 @@ import com.money.manager.domain.services.UserService;
 import com.money.manager.infrastructure.dtos.LoginRequestDTO;
 import com.money.manager.infrastructure.dtos.TokenResponseDTO;
 import com.money.manager.infrastructure.dtos.UserRequestDTO;
+import com.money.manager.infrastructure.dtos.UserResponseDto;
 import com.money.manager.infrastructure.persistance.PostgresUserRespository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class UserServiceImp implements UserService, UserDetailsService{
+public class UserServiceImp implements UserService, UserDetailsService {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final TokenService tokenService;
@@ -41,18 +43,18 @@ public class UserServiceImp implements UserService, UserDetailsService{
 
             return TokenMapper.toDto(tokenService.generateToken(authentication));
         } catch (Exception e) {
-            log.error("error to try login. Error: {}",e.getMessage(),e);
+            log.error("error to try login. Error: {}", e.getMessage(), e);
             throw e;
         }
     }
-    
+
     @Override
-    public User getUser(String username){
+    public User getUser(String username) {
         return postgresUserRespository.findByUsername(username).orElseThrow();
     }
 
     @Override
-    public TokenResponseDTO createUser(final UserRequestDTO userRequestDTO){
+    public TokenResponseDTO createUser(final UserRequestDTO userRequestDTO) {
         User user = UserMapper.fromDto(userRequestDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         postgresUserRespository.save(user);
@@ -62,5 +64,27 @@ public class UserServiceImp implements UserService, UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getUser(username);
+    }
+
+    @Transactional
+    @Override
+    public UserResponseDto updateUser(UserRequestDTO dto, User user) {
+
+        user.setEmail(dto.email());
+        user.setUsername(dto.username());
+
+        if (dto.password() != null && !dto.password().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dto.password()));
+        }
+
+        User updatedUser = postgresUserRespository.save(user);
+
+        return UserMapper.toDto(updatedUser);
+    }
+
+    @Override
+    public String deleteUser(User user){
+        postgresUserRespository.delete(user);
+        return "user delete";
     }
 }

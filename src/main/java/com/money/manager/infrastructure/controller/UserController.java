@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.money.manager.application.mappers.UserMapper;
 import com.money.manager.domain.User;
-import com.money.manager.domain.services.TokenService;
 import com.money.manager.domain.services.UserService;
 import com.money.manager.infrastructure.dtos.LoginRequestDTO;
 import com.money.manager.infrastructure.dtos.TokenResponseDTO;
@@ -19,8 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -44,6 +45,16 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<UserResponseDto> getUserController(Authentication authentication) {
         return ResponseEntity.ok(UserMapper.toDto((User) authentication.getPrincipal()));
+    }
+
+    @PutMapping("")
+    public ResponseEntity<UserResponseDto> updateUserConroller(@RequestBody @Valid UserRequestDTO userRequestDTO, Authentication authentication) {
+        return ResponseEntity.ok(userService.updateUser(userRequestDTO, (User) authentication.getPrincipal()));
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<String> deleteUserController(Authentication authentication){
+        return ResponseEntity.ok(userService.deleteUser((User) authentication.getPrincipal()));
     }
     
 
