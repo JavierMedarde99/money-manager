@@ -29,6 +29,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/login_success"
+        "409":
+          description: duplicate user
         default:
           description: Unexpected error
           content:
@@ -88,8 +90,6 @@ paths:
       responses:
         "200":
           description: user delete
-        "400":
-          description: invalid id
         "404":
           description: user not found
         default:
@@ -121,22 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/errors"
-  /user/logout:
-    post:
-      tags:
-        - user
-      security:
-        - bearerAuth: []
-      responses:
-        '200':
-          description: successful operation
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/errors"        
+                $ref: "#/components/schemas/errors"     
 
   /transaction:
     post: 
