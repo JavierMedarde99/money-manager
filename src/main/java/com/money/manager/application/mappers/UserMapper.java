@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import com.money.manager.domain.User;
 import com.money.manager.infrastructure.dtos.LoginRequestDTO;
 import com.money.manager.infrastructure.dtos.UserRequestDTO;
+import com.money.manager.infrastructure.dtos.UserResponseDto;
 
 public class UserMapper {
     public static Authentication fromDto(final LoginRequestDTO loginRequestDTO) {
@@ -20,6 +21,10 @@ public class UserMapper {
 
     public static LoginRequestDTO toDtoLogin(User user){
         return new LoginRequestDTO(user.getUsername(), user.getPassword());
+    }
+
+    public static UserResponseDto toDto(User user){
+        return new UserResponseDto(user.getUsername(), user.getEmail());
     }
 
 }

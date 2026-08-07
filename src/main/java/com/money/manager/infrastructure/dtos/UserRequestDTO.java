@@ -1,5 +1,7 @@
 package com.money.manager.infrastructure.dtos;
 
-public record UserRequestDTO(String username,String password,String email) {
+import jakarta.validation.constraints.NotBlank;
+
+public record UserRequestDTO(@NotBlank String username,@NotBlank String password,@NotBlank String email) {
     
 }

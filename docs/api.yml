@@ -35,7 +35,70 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/errors"
-  /login:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - user
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user_response"
+        "404":
+          description: user not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errors"
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/user"
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/user_response"
+        "404":
+          description: user not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errors"
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - user    
+      responses:
+        "200":
+          description: user delete
+        "400":
+          description: invalid id
+        "404":
+          description: user not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/errors"
+  /user/login:
     post:
       tags:
         - user
@@ -59,7 +122,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/errors"
-  /logout:
+  /user/logout:
     post:
       tags:
         - user
@@ -74,95 +137,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/errors"        
-  /user/{id}:
-    get:
-      security:
-        - bearerAuth: []
-      tags:
-        - user
-      parameters:
-        - name: id
-          in: path
-          description: user id
-          required: true
-          schema:
-            type: integer
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/user"
-        "400":
-          description: invalid id
-        "404":
-          description: user not found
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/errors"
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - user
-      parameters:
-        - name: id
-          in: path
-          description: user id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/user"
-      responses:
-        "200":
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/user"
-        "400":
-          description: invalid id
-        "404":
-          description: user not found
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/errors"
-    delete:
-      security:
-        - bearerAuth: []
-      tags:
-        - user
-      parameters:
-        - name: id
-          in: path
-          description: user id
-          required: true
-          schema:
-            type: integer      
-      responses:
-        "200":
-          description: user delete
-        "400":
-          description: invalid id
-        "404":
-          description: user not found
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/errors"
 
   /transaction:
     post: 
@@ -732,12 +706,18 @@ components:
         message:
           type: string
           example: error
+    user_response:
+      type: object
+      properties:
+        username:
+          type: string
+          example: username
+        email:
+          type: string
+          example: email@gmail.com
     user:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         username:
           type: string
           example: username

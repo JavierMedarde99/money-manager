@@ -3,14 +3,25 @@ package com.money.manager.infrastructure.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.money.manager.application.mappers.UserMapper;
+import com.money.manager.domain.User;
+import com.money.manager.domain.services.TokenService;
 import com.money.manager.domain.services.UserService;
 import com.money.manager.infrastructure.dtos.LoginRequestDTO;
+import com.money.manager.infrastructure.dtos.TokenResponseDTO;
 import com.money.manager.infrastructure.dtos.UserRequestDTO;
+import com.money.manager.infrastructure.dtos.UserResponseDto;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -21,13 +32,18 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public String postMethodName(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request) {
-        return userService.login(loginRequestDTO);
+    public ResponseEntity<TokenResponseDTO> loginController(@RequestBody @Valid LoginRequestDTO loginRequestDTO, HttpServletRequest request) {
+        return ResponseEntity.ok(userService.login(loginRequestDTO));
     }
     
     @PostMapping("")
-    public String postMethodName(@RequestBody UserRequestDTO userRequestDTO) {
-        return userService.createUser(userRequestDTO);
+    public ResponseEntity<TokenResponseDTO> insertUserController(@RequestBody @Valid UserRequestDTO userRequestDTO) {
+        return ResponseEntity.ok(userService.createUser(userRequestDTO));
+    }
+    
+    @GetMapping("")
+    public ResponseEntity<UserResponseDto> getUserController(Authentication authentication) {
+        return ResponseEntity.ok(UserMapper.toDto((User) authentication.getPrincipal()));
     }
     
 
