@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.money.manager.domain.User;
+import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.services.CategoryService;
 import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
 import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
@@ -17,6 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -36,5 +40,11 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponseDTO>> getMethodName(Authentication authentication) {
         return ResponseEntity.ok(categoryService.getCategoryByUser((User) authentication.getPrincipal()));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponseDTO> getMethodName(@PathVariable Long id) throws NotFoundException {
+        return ResponseEntity.ok(categoryService.getCategory(id));
+    }
+    
     
 }

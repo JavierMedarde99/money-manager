@@ -1,12 +1,14 @@
 package com.money.manager.application.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.money.manager.application.mappers.CategoryMapper;
 import com.money.manager.domain.Category;
 import com.money.manager.domain.User;
+import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.services.CategoryService;
 import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
 import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
@@ -27,9 +29,10 @@ public class CategoryServiceImp implements CategoryService{
     }
 
     @Override
-    public CategoryResponseDTO getCategory(Long categoryId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCategory'");
+    public CategoryResponseDTO getCategory(Long categoryId) throws NotFoundException {
+        Optional<Category> optCategory = categoryRepository.findById(categoryId);
+        Category category = optCategory.orElseThrow(() -> new NotFoundException("category not found"));
+        return CategoryMapper.toDto(category);
     }
 
     @Override
