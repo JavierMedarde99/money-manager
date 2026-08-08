@@ -22,8 +22,8 @@ public class CategoryServiceImp implements CategoryService{
 
     @Override
     public List<CategoryResponseDTO> getCategoryByUser(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCategoryByUser'");
+        List<Category> getAllCategory = categoryRepository.findByUser(user);
+        return getAllCategory.stream().map(category -> CategoryMapper.toDto(category)).toList();
     }
 
     @Override
