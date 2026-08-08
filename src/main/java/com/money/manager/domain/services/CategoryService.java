@@ -11,6 +11,6 @@ public interface CategoryService {
     List<CategoryResponseDTO> getCategoryByUser(User user);
     CategoryResponseDTO getCategory(Long categoryId) throws NotFoundException;
     CategoryResponseDTO createCategory(CategoryRequestDTO categoryDto, User user);
-    CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDto, Long categoryId, User user);
-    String deleteCartegory(Long category);
+    CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDto, Long categoryId, User user) throws NotFoundException;
+    String deleteCartegory(Long category) throws NotFoundException;
 }

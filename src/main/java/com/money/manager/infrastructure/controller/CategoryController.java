@@ -17,34 +17,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
-
-
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/category")
 @RequiredArgsConstructor
 public class CategoryController {
-    
+
     private final CategoryService categoryService;
 
     @PostMapping("")
-    public ResponseEntity<CategoryResponseDTO> insertCategory(@RequestBody CategoryRequestDTO categoryDto, Authentication authentication) {
+    public ResponseEntity<CategoryResponseDTO> insertCategory(@RequestBody CategoryRequestDTO categoryDto,
+            Authentication authentication) {
         return ResponseEntity.ok(categoryService.createCategory(categoryDto, (User) authentication.getPrincipal()));
     }
-    
+
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryResponseDTO>> getMethodName(Authentication authentication) {
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategoryByUser(Authentication authentication) {
         return ResponseEntity.ok(categoryService.getCategoryByUser((User) authentication.getPrincipal()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> getMethodName(@PathVariable Long id) throws NotFoundException {
+    public ResponseEntity<CategoryResponseDTO> getOneCategory(@PathVariable Long id) throws NotFoundException {
         return ResponseEntity.ok(categoryService.getCategory(id));
     }
-    
-    
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long id,
+            @RequestBody CategoryRequestDTO categoryDto, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(categoryService.updateCategory(categoryDto, id, (User) authentication.getPrincipal()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id) throws NotFoundException {
+        return ResponseEntity.ok(categoryService.deleteCartegory(id));
+    }
+
 }

@@ -14,11 +14,12 @@ import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
 import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
 import com.money.manager.infrastructure.persistance.PostgresCategoryRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImp implements CategoryService{
+public class CategoryServiceImp implements CategoryService {
 
     private final PostgresCategoryRepository categoryRepository;
 
@@ -30,8 +31,7 @@ public class CategoryServiceImp implements CategoryService{
 
     @Override
     public CategoryResponseDTO getCategory(Long categoryId) throws NotFoundException {
-        Optional<Category> optCategory = categoryRepository.findById(categoryId);
-        Category category = optCategory.orElseThrow(() -> new NotFoundException("category not found"));
+        Category category = findCategoryById(categoryId);
         return CategoryMapper.toDto(category);
     }
 
@@ -43,16 +43,28 @@ public class CategoryServiceImp implements CategoryService{
 
     }
 
+    @Transactional
     @Override
-    public CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDTO, Long id, User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateCategory'");
+    public CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDTO, Long categoryId, User user)
+            throws NotFoundException {
+        Category category = findCategoryById(categoryId);
+        category.setName(categoryDTO.name());
+        category.setColor(categoryDTO.color());
+        categoryRepository.save(category);
+        return CategoryMapper.toDto(category);
     }
 
     @Override
-    public String deleteCartegory(Long category) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteCartegory'");
+    public String deleteCartegory(Long categoryId) throws NotFoundException{
+        Category category = findCategoryById(categoryId);
+        categoryRepository.delete(category);
+        return "category delete";
     }
-    
+
+
+    private Category findCategoryById(Long categoryId) throws NotFoundException{
+        Optional<Category> optCategory = categoryRepository.findById(categoryId);
+        return optCategory.orElseThrow(() -> new NotFoundException("category not found"));
+    }
+
 }
