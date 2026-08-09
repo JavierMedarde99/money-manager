@@ -23,15 +23,15 @@ public class TransactionMapper {
                 .name(transactionRequestDTO.name())
                 .prices(transactionRequestDTO.price())
                 .subtype(Subtype.getSubTypeByName(transactionRequestDTO.transactionSubtype()))
-                .type(Type.getSubTypeByName(transactionRequestDTO.transactionType()))
-                .dateTransaction(Date.valueOf(date))
+                .type(Type.getTypeByName(transactionRequestDTO.transactionType()))
+                .dateTransaction(date)
                 .build();
     }
 
     public static TransactionResponseDTO toDto(Transaction transaction){
-        return new TransactionResponseDTO(transaction.getName(), transaction.getDateTransaction().toString(), 
+        return new TransactionResponseDTO(transaction.getId(),transaction.getName(), transaction.getDateTransaction().toString(), 
         transaction.getAmount(), transaction.getPrices(), transaction.getType().getName(), 
         transaction.getSubtype().getName(), 
-        CategoryMapper.toDto(transaction.getCategory()), transaction.getId());
+        CategoryMapper.toDto(transaction.getCategory()));
     }
 }

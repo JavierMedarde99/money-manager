@@ -10,7 +10,7 @@ public enum Type {
 
     private String name;
 
-    public static Type getSubTypeByName(String name) {
+    public static Type getTypeByName(String name) {
         for (Type type : Type.values()) {
             if (type.getName().equalsIgnoreCase(name)) {
                 return type;

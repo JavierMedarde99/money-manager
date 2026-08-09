@@ -1,6 +1,7 @@
 package com.money.manager.domain;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,7 +36,7 @@ public class Transaction {
     private Long id;
 
     private String name;
-    private Date dateTransaction;
+    private LocalDate dateTransaction;
     private Integer amount;
     private Double prices;
     @Enumerated(EnumType.STRING)
