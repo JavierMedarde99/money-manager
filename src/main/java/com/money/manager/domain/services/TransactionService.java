@@ -12,7 +12,7 @@ import com.money.manager.infrastructure.dtos.TransactionResponseDTO;
 public interface TransactionService {
     TransactionResponseDTO createTransaction(TransactionRequestDTO transactionRequestDTO, User user) throws NotFoundException;
     Page<TransactionResponseDTO> getAllTransaction(User user, TransactionFilter transactionFilter, Pageable pageable);
-    TransactionResponseDTO getTransaction(Long transactionId);
+    TransactionResponseDTO getTransaction(Long transactionId) throws NotFoundException;
     TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO,Long transactionId);
     String deleteTransaction(Long transactionId);
 }

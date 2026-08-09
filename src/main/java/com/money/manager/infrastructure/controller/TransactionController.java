@@ -14,7 +14,6 @@ import com.money.manager.infrastructure.dtos.TransactionResponseDTO;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("transaction")
@@ -43,7 +43,7 @@ public class TransactionController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<TransactionResponseDTO>> getMethodName(@RequestParam(required = false) String type,
+    public ResponseEntity<Page<TransactionResponseDTO>> obtainListTransaction(@RequestParam(required = false) String type,
             @RequestParam(required = false) String subType,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate to,
@@ -67,5 +67,11 @@ public class TransactionController {
                         filter,
                         pageable));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionResponseDTO> obteinTransaction(@PathVariable Long id) throws NotFoundException {
+        return ResponseEntity.ok(transactionService.getTransaction(id));
+    }
+    
 
 }

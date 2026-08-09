@@ -1,5 +1,7 @@
 package com.money.manager.application.services;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -54,9 +56,10 @@ public class TransactionServiceImp implements TransactionService {
     }
 
     @Override
-    public TransactionResponseDTO getTransaction(Long transactionId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTransaction'");
+    public TransactionResponseDTO getTransaction(Long transactionId) throws NotFoundException {
+        Optional<Transaction> optTransaction = transactionRepository.findById(transactionId);
+        Transaction transaction = optTransaction.orElseThrow(() -> new NotFoundException("transaction not found"));
+        return TransactionMapper.toDto(transaction);
     }
 
     @Override
