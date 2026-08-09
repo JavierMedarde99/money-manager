@@ -2,8 +2,6 @@ package com.money.manager.infrastructure.dtos;
 
 import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
 

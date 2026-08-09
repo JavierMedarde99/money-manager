@@ -2,9 +2,8 @@ package com.money.manager.domain;
 
 import java.time.LocalDate;
 
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,9 +17,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import com.money.manager.domain.enums.Subtype;
-import com.money.manager.domain.enums.Type;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,26 +24,18 @@ import com.money.manager.domain.enums.Type;
 @ToString
 @Builder
 @Entity
-@Table(name = "transactions")
-public class Transaction {
+@Table(name = "payments")
+public class Payment {
+        
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    private LocalDate dateTransaction;
-    private Integer amount;
-    private Double prices;
-    @Enumerated(EnumType.STRING)
-    private Type type;
-    @Enumerated(EnumType.STRING)
-    private Subtype subtype;
+    private LocalDate paymentDate;
+    private Double amount;
     
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "debt_id")
+    private Debt debt;
 }

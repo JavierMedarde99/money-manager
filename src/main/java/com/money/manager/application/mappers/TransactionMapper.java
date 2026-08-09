@@ -1,6 +1,5 @@
 package com.money.manager.application.mappers;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 

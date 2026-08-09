@@ -1,0 +1,30 @@
+package com.money.manager.infrastructure.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.money.manager.domain.User;
+import com.money.manager.domain.services.DebtService;
+import com.money.manager.infrastructure.dtos.DebtRequestDTO;
+import com.money.manager.infrastructure.dtos.DebtResponseDTO;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+@RestController
+@RequestMapping("/debt")
+@RequiredArgsConstructor
+public class DebtController {
+    private final DebtService debtService;
+
+    @PostMapping("")
+    public ResponseEntity<DebtResponseDTO> postMethodName(@RequestBody DebtRequestDTO debtRequestDTO, Authentication authentication) {
+        return ResponseEntity.ok(debtService.insertDebt(debtRequestDTO, (User) authentication.getPrincipal()));
+    }
+    
+}

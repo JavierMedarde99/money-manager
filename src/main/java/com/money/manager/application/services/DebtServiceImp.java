@@ -1,0 +1,56 @@
+package com.money.manager.application.services;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.money.manager.application.mappers.DebtMapper;
+import com.money.manager.domain.Debt;
+import com.money.manager.domain.DebtRepository;
+import com.money.manager.domain.User;
+import com.money.manager.domain.exception.NotFoundException;
+import com.money.manager.domain.services.DebtService;
+import com.money.manager.infrastructure.dtos.DebtRequestDTO;
+import com.money.manager.infrastructure.dtos.DebtResponseDTO;
+import com.money.manager.infrastructure.persistance.PostgresDebtRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class DebtServiceImp implements DebtService{
+
+    private final PostgresDebtRepository debtRepository;
+
+    @Override
+    public DebtResponseDTO insertDebt(DebtRequestDTO debtRequestDTO, User user) {
+        Debt debt = DebtMapper.fromDto(debtRequestDTO, user);
+        debtRepository.save(debt);
+        return DebtMapper.toDto(debt);
+    }
+
+    @Override
+    public List<DebtResponseDTO> getDebts(User user) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDebts'");
+    }
+
+    @Override
+    public DebtResponseDTO getDebt(Long id) throws NotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDebt'");
+    }
+
+    @Override
+    public DebtResponseDTO updateDebt(DebtRequestDTO debtRequestDTO, Long id) throws NotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateDebt'");
+    }
+
+    @Override
+    public String deleteDebt(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteDebt'");
+    }
+    
+}

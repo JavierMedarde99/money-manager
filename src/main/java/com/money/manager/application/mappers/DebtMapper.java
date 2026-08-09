@@ -1,0 +1,25 @@
+package com.money.manager.application.mappers;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import com.money.manager.domain.Debt;
+import com.money.manager.domain.User;
+import com.money.manager.infrastructure.dtos.DebtRequestDTO;
+import com.money.manager.infrastructure.dtos.DebtResponseDTO;
+
+public class DebtMapper {
+    public static Debt fromDto(DebtRequestDTO debtRequestDTO, User user) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate dateStart = LocalDate.parse(debtRequestDTO.starDate(), formatter);
+        LocalDate dateEnd = debtRequestDTO.endDate() == null ? null : LocalDate.parse(debtRequestDTO.endDate(), formatter);
+        return Debt.builder().name(debtRequestDTO.name()).totalAmount(debtRequestDTO.totalAmount())
+                .startDate(dateStart)
+                .endDate(dateEnd).user(user).build();
+    }
+
+    public static DebtResponseDTO toDto(Debt debt) {
+        return new DebtResponseDTO(debt.getId(), debt.getName(), debt.getTotalAmount(), debt.getStartDate().toString(),
+                debt.getEndDate() == null ? null : debt.getEndDate().toString());
+    }
+}
