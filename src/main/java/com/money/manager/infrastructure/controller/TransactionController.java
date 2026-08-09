@@ -82,6 +82,9 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.updateTransaction(transactionDto, id, (User) authentication.getPrincipal()));
     }
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) throws NotFoundException{
+        return ResponseEntity.ok(transactionService.deleteTransaction(id));
+    }
 
 }

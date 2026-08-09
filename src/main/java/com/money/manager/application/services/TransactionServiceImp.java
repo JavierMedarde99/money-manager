@@ -83,8 +83,9 @@ public class TransactionServiceImp implements TransactionService {
 
     @Override
     public String deleteTransaction(Long transactionId) throws NotFoundException{
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTransaction'");
+        Transaction transaction = findById(transactionId);
+        transactionRepository.delete(transaction);
+        return "transaction delete"; 
     }
 
     private Transaction findById(Long id) throws NotFoundException{
