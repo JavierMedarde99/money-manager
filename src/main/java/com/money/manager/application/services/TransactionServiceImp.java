@@ -1,5 +1,7 @@
 package com.money.manager.application.services;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +13,8 @@ import com.money.manager.application.mappers.TransactionMapper;
 import com.money.manager.domain.Category;
 import com.money.manager.domain.Transaction;
 import com.money.manager.domain.User;
+import com.money.manager.domain.enums.Subtype;
+import com.money.manager.domain.enums.Type;
 import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.services.CategoryService;
 import com.money.manager.domain.services.TransactionService;
@@ -57,21 +61,34 @@ public class TransactionServiceImp implements TransactionService {
 
     @Override
     public TransactionResponseDTO getTransaction(Long transactionId) throws NotFoundException {
-        Optional<Transaction> optTransaction = transactionRepository.findById(transactionId);
-        Transaction transaction = optTransaction.orElseThrow(() -> new NotFoundException("transaction not found"));
+        Transaction transaction = findById(transactionId);
         return TransactionMapper.toDto(transaction);
     }
 
     @Override
-    public TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO, Long transactionId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateTransaction'");
+    public TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO, Long transactionId,User user) throws NotFoundException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        Transaction transaction = findById(transactionId);
+        transaction.setName(transactionRequestDTO.name());
+        transaction.setDateTransaction( LocalDate.parse(transactionRequestDTO.transactionDate(), formatter));
+        transaction.setPrices(transactionRequestDTO.price());
+        transaction.setAmount(transactionRequestDTO.amount());
+        transaction.setSubtype(Subtype.getSubTypeByName(transactionRequestDTO.transactionSubtype()));
+        transaction.setType(Type.getTypeByName(transactionRequestDTO.transactionType()));
+        transaction.setCategory(CategoryMapper.fromDto(categoryService.getCategory(transactionRequestDTO.category().id()),
+                user));
+        transactionRepository.save(transaction);
+        return TransactionMapper.toDto(transaction);
     }
 
     @Override
-    public String deleteTransaction(Long transactionId) {
+    public String deleteTransaction(Long transactionId) throws NotFoundException{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteTransaction'");
     }
 
+    private Transaction findById(Long id) throws NotFoundException{
+        Optional<Transaction> optTransaction = transactionRepository.findById(id);
+        return optTransaction.orElseThrow(() -> new NotFoundException("transaction not found"));
+    }
 }

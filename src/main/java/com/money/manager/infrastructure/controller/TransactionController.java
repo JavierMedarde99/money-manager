@@ -25,9 +25,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RequestMapping("transaction")
 @RestController
@@ -73,5 +76,12 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.getTransaction(id));
     }
     
+    @PutMapping("/{id}")
+    public ResponseEntity<TransactionResponseDTO> updateTransaction(@PathVariable Long id, @RequestBody TransactionRequestDTO transactionDto,
+            Authentication authentication) throws NotFoundException{
+        return ResponseEntity.ok(transactionService.updateTransaction(transactionDto, id, (User) authentication.getPrincipal()));
+    }
+
+
 
 }

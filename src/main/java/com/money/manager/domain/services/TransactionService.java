@@ -13,6 +13,6 @@ public interface TransactionService {
     TransactionResponseDTO createTransaction(TransactionRequestDTO transactionRequestDTO, User user) throws NotFoundException;
     Page<TransactionResponseDTO> getAllTransaction(User user, TransactionFilter transactionFilter, Pageable pageable);
     TransactionResponseDTO getTransaction(Long transactionId) throws NotFoundException;
-    TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO,Long transactionId);
-    String deleteTransaction(Long transactionId);
+    TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO,Long transactionId,User user) throws NotFoundException;
+    String deleteTransaction(Long transactionId) throws NotFoundException;
 }
