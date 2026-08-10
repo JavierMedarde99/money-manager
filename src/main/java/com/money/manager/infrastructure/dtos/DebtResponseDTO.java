@@ -1,4 +1,6 @@
 package com.money.manager.infrastructure.dtos;
 
-public record DebtResponseDTO(Long id, String name, Double totalAmount, String starDate, String endDate) {
+import java.util.List;
+
+public record DebtResponseDTO(Long id, String name, Double totalAmount, String starDate, String endDate,List<PaymentResponseDTO> payments) {
 } 

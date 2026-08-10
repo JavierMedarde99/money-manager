@@ -31,8 +31,8 @@ public class DebtServiceImp implements DebtService{
 
     @Override
     public List<DebtResponseDTO> getDebts(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDebts'");
+        List<Debt> listDebts = debtRepository.findByUser(user);
+        return listDebts.stream().map(debt -> DebtMapper.toDto(debt)).toList();
     }
 
     @Override

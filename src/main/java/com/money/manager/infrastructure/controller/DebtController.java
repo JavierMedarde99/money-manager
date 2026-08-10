@@ -10,10 +10,14 @@ import com.money.manager.infrastructure.dtos.DebtResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 @RestController
@@ -26,5 +30,11 @@ public class DebtController {
     public ResponseEntity<DebtResponseDTO> postMethodName(@RequestBody DebtRequestDTO debtRequestDTO, Authentication authentication) {
         return ResponseEntity.ok(debtService.insertDebt(debtRequestDTO, (User) authentication.getPrincipal()));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<DebtResponseDTO>> getMethodName(Authentication authentication) {
+        return ResponseEntity.ok(debtService.getDebts((User) authentication.getPrincipal()));
+    }
+    
     
 }
