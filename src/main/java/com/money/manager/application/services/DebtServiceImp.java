@@ -1,6 +1,7 @@
 package com.money.manager.application.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,8 @@ public class DebtServiceImp implements DebtService{
 
     @Override
     public DebtResponseDTO getDebt(Long id) throws NotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDebt'");
+        Debt debt = getDebtById(id);
+        return DebtMapper.toDto(debt);
     }
 
     @Override
@@ -48,9 +49,14 @@ public class DebtServiceImp implements DebtService{
     }
 
     @Override
-    public String deleteDebt(Long id) {
+    public String deleteDebt(Long id) throws NotFoundException{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteDebt'");
+    }
+
+    private Debt getDebtById(Long id) throws NotFoundException{
+        Optional<Debt> optDebt = debtRepository.findById(id);
+        return optDebt.orElseThrow(() -> new NotFoundException()); 
     }
     
 }
