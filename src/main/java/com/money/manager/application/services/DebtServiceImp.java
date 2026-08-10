@@ -57,8 +57,9 @@ public class DebtServiceImp implements DebtService{
 
     @Override
     public String deleteDebt(Long id) throws NotFoundException{
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteDebt'");
+       Debt debt = getDebtById(id);
+       debtRepository.delete(debt);
+       return "debt delete";
     }
 
     private Debt getDebtById(Long id) throws NotFoundException{
