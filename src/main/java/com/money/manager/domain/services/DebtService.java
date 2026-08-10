@@ -11,6 +11,6 @@ public interface DebtService {
     DebtResponseDTO insertDebt(DebtRequestDTO debtRequestDTO,User user);
     List<DebtResponseDTO> getDebts(User user);
     DebtResponseDTO getDebt(Long id) throws NotFoundException;
-    DebtResponseDTO updateDebt(DebtRequestDTO debtRequestDTO,Long id) throws NotFoundException;
+    DebtResponseDTO updateDebt(DebtRequestDTO debtRequestDTO,Long id, User user) throws NotFoundException;
     String deleteDebt(Long id) throws NotFoundException;
 }

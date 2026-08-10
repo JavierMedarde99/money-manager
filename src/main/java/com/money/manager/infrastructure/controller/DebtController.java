@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -31,19 +33,23 @@ public class DebtController {
     private final DebtService debtService;
 
     @PostMapping("")
-    public ResponseEntity<DebtResponseDTO> postMethodName(@RequestBody DebtRequestDTO debtRequestDTO, Authentication authentication) {
+    public ResponseEntity<DebtResponseDTO> insertDebt(@RequestBody DebtRequestDTO debtRequestDTO, Authentication authentication) {
         return ResponseEntity.ok(debtService.insertDebt(debtRequestDTO, (User) authentication.getPrincipal()));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<DebtResponseDTO>> getMethodName(Authentication authentication) {
+    public ResponseEntity<List<DebtResponseDTO>> getDebts(Authentication authentication) {
         return ResponseEntity.ok(debtService.getDebts((User) authentication.getPrincipal()));
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<DebtResponseDTO> getMethodName(@PathVariable Long id) throws NotFoundException {
+    public ResponseEntity<DebtResponseDTO> getDebt(@PathVariable Long id) throws NotFoundException {
         return ResponseEntity.ok(debtService.getDebt(id));
     }
     
+    @PutMapping("/{id}")
+    public ResponseEntity<DebtResponseDTO> putMethodName(@PathVariable Long id, @RequestBody DebtRequestDTO debtRequestDTO, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(debtService.updateDebt(debtRequestDTO, id, (User) authentication.getPrincipal()));
+    }
     
 }
