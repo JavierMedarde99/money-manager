@@ -16,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
@@ -25,7 +24,6 @@ import com.money.manager.domain.enums.Type;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Entity
 @Table(name = "transactions")
