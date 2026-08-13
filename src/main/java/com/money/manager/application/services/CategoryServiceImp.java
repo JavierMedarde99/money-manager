@@ -30,8 +30,8 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public CategoryResponseDTO getCategory(Long categoryId) throws NotFoundException {
-        Category category = findCategoryById(categoryId);
+    public CategoryResponseDTO getCategory(Long categoryId, User user) throws NotFoundException {
+        Category category = findCategoryById(categoryId, user);
         return CategoryMapper.toDto(category);
     }
 
@@ -47,7 +47,7 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDTO, Long categoryId, User user)
             throws NotFoundException {
-        Category category = findCategoryById(categoryId);
+        Category category = findCategoryById(categoryId, user);
         category.setName(categoryDTO.name());
         category.setColor(categoryDTO.color());
         categoryRepository.save(category);
@@ -55,15 +55,15 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public String deleteCartegory(Long categoryId) throws NotFoundException{
-        Category category = findCategoryById(categoryId);
+    public String deleteCartegory(Long categoryId, User user) throws NotFoundException{
+        Category category = findCategoryById(categoryId, user);
         categoryRepository.delete(category);
         return "category delete";
     }
 
 
-    private Category findCategoryById(Long categoryId) throws NotFoundException{
-        Optional<Category> optCategory = categoryRepository.findById(categoryId);
+    private Category findCategoryById(Long categoryId, User user) throws NotFoundException{
+        Optional<Category> optCategory = categoryRepository.findByIdAndUser_Id(categoryId, user.getId());
         return optCategory.orElseThrow(() -> new NotFoundException("category not found"));
     }
 
