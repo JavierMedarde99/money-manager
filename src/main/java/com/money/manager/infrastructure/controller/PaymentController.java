@@ -31,7 +31,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("")
-    public ResponseEntity<PaymentResponseDTO> insertPayment(@RequestBody PaymentRequestDTO paymentRequestDTO,Authentication authentication) {
+    public ResponseEntity<PaymentResponseDTO> insertPayment(@RequestBody PaymentRequestDTO paymentRequestDTO,Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(paymentService.insertPayment(paymentRequestDTO, (User) authentication.getPrincipal()));
     }
     

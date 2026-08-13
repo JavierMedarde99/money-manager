@@ -7,12 +7,14 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.money.manager.application.mappers.PaymentMapper;
+import com.money.manager.domain.Debt;
 import com.money.manager.domain.Payment;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.services.PaymentService;
 import com.money.manager.infrastructure.dtos.PaymentRequestDTO;
 import com.money.manager.infrastructure.dtos.PaymentResponseDTO;
+import com.money.manager.infrastructure.persistance.PostgresDebtRepository;
 import com.money.manager.infrastructure.persistance.PostgresPaymentRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,10 +24,13 @@ import lombok.RequiredArgsConstructor;
 public class PaymentServiceImp implements PaymentService{
 
     private final PostgresPaymentRepository paymentRepository;
+    private final PostgresDebtRepository debtRepository;
 
     @Override
-    public PaymentResponseDTO insertPayment(PaymentRequestDTO paymentRequestDTO,User user) {
-        Payment payment = PaymentMapper.fromDto(paymentRequestDTO, user);
+    public PaymentResponseDTO insertPayment(PaymentRequestDTO paymentRequestDTO,User user) throws NotFoundException {
+        Debt debt = debtRepository.findById(paymentRequestDTO.debt().id())
+                .orElseThrow(() -> new NotFoundException("debt not found"));
+        Payment payment = PaymentMapper.fromDto(paymentRequestDTO, debt);
         payment = paymentRepository.save(payment);
         return PaymentMapper.toDto(payment);
     }
