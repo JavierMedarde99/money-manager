@@ -31,22 +31,22 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("")
-    public ResponseEntity<PaymentResponseDTO> insertPayment(@RequestBody PaymentRequestDTO paymentRequestDTO,Authentication authentication) {
+    public ResponseEntity<PaymentResponseDTO> insertPayment(@RequestBody PaymentRequestDTO paymentRequestDTO,Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(paymentService.insertPayment(paymentRequestDTO, (User) authentication.getPrincipal()));
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentResponseDTO> getPayment(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(paymentService.getPayment(id));
+    public ResponseEntity<PaymentResponseDTO> getPayment(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(paymentService.getPayment(id, (User) authentication.getPrincipal()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO) throws NotFoundException {
-        return ResponseEntity.ok(paymentService.updatePayment(paymentRequestDTO, id));
+    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(paymentService.updatePayment(paymentRequestDTO, id, (User) authentication.getPrincipal()));
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePayment(@PathVariable Long id) throws NotFoundException{
-        return ResponseEntity.ok(paymentService.deletePayment(id));
+    public ResponseEntity<String> deletePayment(@PathVariable Long id, Authentication authentication) throws NotFoundException{
+        return ResponseEntity.ok(paymentService.deletePayment(id, (User) authentication.getPrincipal()));
     }
 }

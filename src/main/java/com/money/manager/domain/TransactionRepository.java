@@ -2,6 +2,7 @@ package com.money.manager.domain;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,8 @@ public interface TransactionRepository {
     List<Transaction> findByUser(User user);
 
     List<Transaction> findByUserAndCategory(User user, Category category);
+
+    Optional<Transaction> findByIdAndUser_Id(Long id, Long userId);
 
     Page<Transaction> findByFilters(
             User user,
