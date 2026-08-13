@@ -74,8 +74,8 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionResponseDTO> obteinTransaction(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(transactionService.getTransaction(id));
+    public ResponseEntity<TransactionResponseDTO> obteinTransaction(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(transactionService.getTransaction(id, (User) authentication.getPrincipal()));
     }
     
     @PutMapping("/{id}")
@@ -85,8 +85,8 @@ public class TransactionController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) throws NotFoundException{
-        return ResponseEntity.ok(transactionService.deleteTransaction(id));
+    public ResponseEntity<String> deleteTransaction(@PathVariable Long id, Authentication authentication) throws NotFoundException{
+        return ResponseEntity.ok(transactionService.deleteTransaction(id, (User) authentication.getPrincipal()));
     }
 
 }

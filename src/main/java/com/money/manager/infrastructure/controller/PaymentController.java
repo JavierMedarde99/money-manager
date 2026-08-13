@@ -36,17 +36,17 @@ public class PaymentController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentResponseDTO> getPayment(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(paymentService.getPayment(id));
+    public ResponseEntity<PaymentResponseDTO> getPayment(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(paymentService.getPayment(id, (User) authentication.getPrincipal()));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO) throws NotFoundException {
-        return ResponseEntity.ok(paymentService.updatePayment(paymentRequestDTO, id));
+    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(paymentService.updatePayment(paymentRequestDTO, id, (User) authentication.getPrincipal()));
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePayment(@PathVariable Long id) throws NotFoundException{
-        return ResponseEntity.ok(paymentService.deletePayment(id));
+    public ResponseEntity<String> deletePayment(@PathVariable Long id, Authentication authentication) throws NotFoundException{
+        return ResponseEntity.ok(paymentService.deletePayment(id, (User) authentication.getPrincipal()));
     }
 }

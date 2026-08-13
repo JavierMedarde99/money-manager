@@ -41,15 +41,15 @@ public class DebtServiceImp implements DebtService{
 
     @Override
     @Transactional(readOnly = true)
-    public DebtResponseDTO getDebt(Long id) throws NotFoundException {
-        Debt debt = getDebtById(id);
+    public DebtResponseDTO getDebt(Long id, User user) throws NotFoundException {
+        Debt debt = getDebtById(id, user);
         return DebtMapper.toDto(debt);
     }
 
     @Override
     public DebtResponseDTO updateDebt(DebtRequestDTO debtRequestDTO, Long id, User user) throws NotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        Debt debt = getDebtById(id);
+        Debt debt = getDebtById(id, user);
         debt.setStartDate(LocalDate.parse(debtRequestDTO.starDate(), formatter));
         debt.setName(debtRequestDTO.name());
         debt.setTotalAmount(debtRequestDTO.totalAmount());
@@ -59,14 +59,14 @@ public class DebtServiceImp implements DebtService{
     }
 
     @Override
-    public String deleteDebt(Long id) throws NotFoundException{
-       Debt debt = getDebtById(id);
+    public String deleteDebt(Long id, User user) throws NotFoundException{
+       Debt debt = getDebtById(id, user);
        debtRepository.delete(debt);
        return "debt delete";
     }
 
-    private Debt getDebtById(Long id) throws NotFoundException{
-        Optional<Debt> optDebt = debtRepository.findById(id);
+    private Debt getDebtById(Long id, User user) throws NotFoundException{
+        Optional<Debt> optDebt = debtRepository.findByIdAndUser_Id(id, user.getId());
         return optDebt.orElseThrow(() -> new NotFoundException()); 
     }
     
