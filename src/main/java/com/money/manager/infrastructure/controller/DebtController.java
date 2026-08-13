@@ -47,8 +47,8 @@ public class DebtController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<DebtResponseDTO> getDebt(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(debtService.getDebt(id));
+    public ResponseEntity<DebtResponseDTO> getDebt(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(debtService.getDebt(id, (User) authentication.getPrincipal()));
     }
     
     @PutMapping("/{id}")
@@ -57,8 +57,8 @@ public class DebtController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDebt(@PathVariable Long id) throws NotFoundException{
-        return ResponseEntity.ok(debtService.deleteDebt(id));
+    public ResponseEntity<String> deleteDebt(@PathVariable Long id, Authentication authentication) throws NotFoundException{
+        return ResponseEntity.ok(debtService.deleteDebt(id, (User) authentication.getPrincipal()));
     }
     
 }

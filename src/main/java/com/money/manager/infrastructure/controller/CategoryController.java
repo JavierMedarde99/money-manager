@@ -44,8 +44,8 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> getOneCategory(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(categoryService.getCategory(id));
+    public ResponseEntity<CategoryResponseDTO> getOneCategory(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(categoryService.getCategory(id, (User) authentication.getPrincipal()));
     }
 
     @PutMapping("/{id}")
@@ -55,8 +55,8 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(categoryService.deleteCartegory(id));
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(categoryService.deleteCartegory(id, (User) authentication.getPrincipal()));
     }
 
 }
