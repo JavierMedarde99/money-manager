@@ -48,13 +48,11 @@ public class ExceptionHandlerController {
                 .body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(), "id is must by a number"));
     }
 
-    /*
-     * @ExceptionHandler(Exception.class)
-     * public ResponseEntity<ErrorResponseDTO> internalError(Exception ex) {
-     * log.debug("internal error : {}",ex.getMessage(),ex);
-     * return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-     * .body(new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-     * "please contect with the it team"));
-     * }
-     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDTO> internalError(Exception ex) {
+        log.error("internal error : {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "an unexpected error occurred, contact the IT team"));
+    }
 }
