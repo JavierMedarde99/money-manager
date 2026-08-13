@@ -9,6 +9,7 @@ import com.money.manager.domain.services.PaymentService;
 import com.money.manager.infrastructure.dtos.PaymentRequestDTO;
 import com.money.manager.infrastructure.dtos.PaymentResponseDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +32,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping("")
-    public ResponseEntity<PaymentResponseDTO> insertPayment(@RequestBody PaymentRequestDTO paymentRequestDTO,Authentication authentication) throws NotFoundException {
+    public ResponseEntity<PaymentResponseDTO> insertPayment(@RequestBody @Valid PaymentRequestDTO paymentRequestDTO,Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(paymentService.insertPayment(paymentRequestDTO, (User) authentication.getPrincipal()));
     }
     
@@ -41,7 +42,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentRequestDTO paymentRequestDTO, Authentication authentication) throws NotFoundException {
+    public ResponseEntity<PaymentResponseDTO> updatePayment(@PathVariable Long id, @RequestBody @Valid PaymentRequestDTO paymentRequestDTO, Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(paymentService.updatePayment(paymentRequestDTO, id, (User) authentication.getPrincipal()));
     }
     

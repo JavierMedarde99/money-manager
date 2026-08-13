@@ -1,5 +1,8 @@
 package com.money.manager.infrastructure.dtos;
 
-public record CategoryRequestDTO(String name, String color) {
-    
+import jakarta.validation.constraints.NotBlank;
+
+public record CategoryRequestDTO(
+        @NotBlank String name,
+        @NotBlank String color) {
 }

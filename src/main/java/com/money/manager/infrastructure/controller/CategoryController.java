@@ -9,6 +9,7 @@ import com.money.manager.domain.services.CategoryService;
 import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
 import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("")
-    public ResponseEntity<CategoryResponseDTO> insertCategory(@RequestBody CategoryRequestDTO categoryDto,
+    public ResponseEntity<CategoryResponseDTO> insertCategory(@RequestBody @Valid CategoryRequestDTO categoryDto,
             Authentication authentication) {
         return ResponseEntity.ok(categoryService.createCategory(categoryDto, (User) authentication.getPrincipal()));
     }
@@ -49,7 +50,7 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long id,
-            @RequestBody CategoryRequestDTO categoryDto, Authentication authentication) throws NotFoundException {
+            @RequestBody @Valid CategoryRequestDTO categoryDto, Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(categoryService.updateCategory(categoryDto, id, (User) authentication.getPrincipal()));
     }
 
