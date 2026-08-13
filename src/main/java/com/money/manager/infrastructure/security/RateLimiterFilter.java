@@ -26,6 +26,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        // You just need to apply rate limits to the endpoints that don't require authorization.
         boolean isLogin = request.getRequestURI().equals("/user/login")
                 && HttpMethod.POST.matches(request.getMethod());
         boolean isRegister = request.getRequestURI().equals("/user")
@@ -36,6 +37,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
             return;
         }
 
+        // key is remote access to identify the user making the call.
         String key = (isLogin ? "login:" : "register:") + request.getRemoteAddr();
         int maxRequests = isLogin ? MAX_LOGIN_REQUESTS : MAX_REGISTER_REQUESTS;
 
