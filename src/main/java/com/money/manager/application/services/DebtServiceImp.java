@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.money.manager.application.mappers.DebtMapper;
 import com.money.manager.domain.Debt;
@@ -32,12 +33,14 @@ public class DebtServiceImp implements DebtService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<DebtResponseDTO> getDebts(User user) {
         List<Debt> listDebts = debtRepository.findByUser(user);
         return listDebts.stream().map(debt -> DebtMapper.toDto(debt)).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DebtResponseDTO getDebt(Long id, User user) throws NotFoundException {
         Debt debt = getDebtById(id, user);
         return DebtMapper.toDto(debt);

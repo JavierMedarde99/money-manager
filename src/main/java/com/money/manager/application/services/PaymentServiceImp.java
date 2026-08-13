@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.money.manager.application.mappers.PaymentMapper;
 import com.money.manager.domain.Debt;
@@ -27,11 +28,11 @@ public class PaymentServiceImp implements PaymentService{
     private final DebtRepository debtRepository;
 
     @Override
+    @Transactional
     public PaymentResponseDTO insertPayment(PaymentRequestDTO paymentRequestDTO, User user) throws NotFoundException {
         Debt debt = debtRepository.findByIdAndUser_Id(paymentRequestDTO.debt().id(), user.getId())
                 .orElseThrow(() -> new NotFoundException("debt not found"));
-        Payment payment = PaymentMapper.fromDto(paymentRequestDTO, user);
-        payment.setDebt(debt);
+        Payment payment = PaymentMapper.fromDto(paymentRequestDTO, debt);
         payment = paymentRepository.save(payment);
         return PaymentMapper.toDto(payment);
     }
