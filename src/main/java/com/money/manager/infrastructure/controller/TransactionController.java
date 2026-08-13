@@ -11,6 +11,7 @@ import com.money.manager.infrastructure.dtos.TransactionFilter;
 import com.money.manager.infrastructure.dtos.TransactionRequestDTO;
 import com.money.manager.infrastructure.dtos.TransactionResponseDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -41,7 +42,7 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("")
-    public ResponseEntity<TransactionResponseDTO> insertTransaction(@RequestBody TransactionRequestDTO transactionDto,
+    public ResponseEntity<TransactionResponseDTO> insertTransaction(@RequestBody @Valid TransactionRequestDTO transactionDto,
             Authentication authentication) throws NotFoundException {
         return ResponseEntity
                 .ok(transactionService.createTransaction(transactionDto, (User) authentication.getPrincipal()));
@@ -62,8 +63,8 @@ public class TransactionController {
                 to);
 
         Pageable pageable = PageRequest.of(
-                page,
-                size,
+                Math.max(page, 0),
+                Math.max(1, Math.min(size, 100)),
                 Sort.by("id").descending());
 
         return ResponseEntity.ok(
@@ -74,19 +75,19 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionResponseDTO> obteinTransaction(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(transactionService.getTransaction(id));
+    public ResponseEntity<TransactionResponseDTO> obteinTransaction(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(transactionService.getTransaction(id, (User) authentication.getPrincipal()));
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<TransactionResponseDTO> updateTransaction(@PathVariable Long id, @RequestBody TransactionRequestDTO transactionDto,
+    public ResponseEntity<TransactionResponseDTO> updateTransaction(@PathVariable Long id, @RequestBody @Valid TransactionRequestDTO transactionDto,
             Authentication authentication) throws NotFoundException{
         return ResponseEntity.ok(transactionService.updateTransaction(transactionDto, id, (User) authentication.getPrincipal()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTransaction(@PathVariable Long id) throws NotFoundException{
-        return ResponseEntity.ok(transactionService.deleteTransaction(id));
+    public ResponseEntity<String> deleteTransaction(@PathVariable Long id, Authentication authentication) throws NotFoundException{
+        return ResponseEntity.ok(transactionService.deleteTransaction(id, (User) authentication.getPrincipal()));
     }
 
 }
