@@ -1,11 +1,11 @@
 package com.money.manager.infrastructure.persistance;
 
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.money.manager.domain.Category;
-import com.money.manager.domain.CategoryRepository;
+import com.money.manager.infrastructure.persistance.entity.CategoryJpa;
 
-public interface PostgresCategoryRepository extends JpaRepository<Category,Long>, CategoryRepository{
-    
+public interface PostgresCategoryRepository extends JpaRepository<CategoryJpa, Long> {
+    List<CategoryJpa> findByUser_Id(Long userId);
 }
