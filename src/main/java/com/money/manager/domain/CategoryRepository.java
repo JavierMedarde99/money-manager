@@ -8,6 +8,8 @@ public interface CategoryRepository {
 
     Optional<Category> findById(Long id);
 
+    Optional<Category> findByIdAndUser_Id(Long id, Long userId);
+
     Category save(Category category);
 
     void delete(Category category);
