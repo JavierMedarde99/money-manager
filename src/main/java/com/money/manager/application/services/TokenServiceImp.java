@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -15,8 +14,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import com.money.manager.domain.User;
-import com.money.manager.domain.services.TokenService;
+import com.money.manager.application.ports.TokenService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,12 +29,10 @@ public class TokenServiceImp implements TokenService {
     private final JwtDecoder jwtDecoder;
 
     @Override
-    public String generateToken(Authentication authentication) {
+    public String generateToken(String username) {
         Instant now = Instant.now();
 
-        User currentUser = (User) authentication.getPrincipal();
-
-        JwtClaimsSet claims = JwtClaimsSet.builder().subject(currentUser.getUsername()).issuedAt(now)
+        JwtClaimsSet claims = JwtClaimsSet.builder().subject(username).issuedAt(now)
                 .expiresAt(now.plus(jwtExpiration, ChronoUnit.MINUTES)).build();
         
         var jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);

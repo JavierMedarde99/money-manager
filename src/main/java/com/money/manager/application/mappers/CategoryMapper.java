@@ -2,8 +2,8 @@ package com.money.manager.application.mappers;
 
 import com.money.manager.domain.Category;
 import com.money.manager.domain.User;
-import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
-import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
+import com.money.manager.application.dtos.CategoryRequestDTO;
+import com.money.manager.application.dtos.CategoryResponseDTO;
 
 public class CategoryMapper {
     

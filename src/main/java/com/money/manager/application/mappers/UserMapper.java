@@ -4,9 +4,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 
 import com.money.manager.domain.User;
-import com.money.manager.infrastructure.dtos.LoginRequestDTO;
-import com.money.manager.infrastructure.dtos.UserRequestDTO;
-import com.money.manager.infrastructure.dtos.UserResponseDto;
+import com.money.manager.application.dtos.LoginRequestDTO;
+import com.money.manager.application.dtos.UserRequestDTO;
+import com.money.manager.application.dtos.UserResponseDto;
 
 public class UserMapper {
     public static Authentication fromDto(final LoginRequestDTO loginRequestDTO) {

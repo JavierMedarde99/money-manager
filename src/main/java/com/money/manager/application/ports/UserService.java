@@ -1,10 +1,10 @@
-package com.money.manager.domain.services;
+package com.money.manager.application.ports;
 
+import com.money.manager.application.dtos.LoginRequestDTO;
+import com.money.manager.application.dtos.TokenResponseDTO;
+import com.money.manager.application.dtos.UserRequestDTO;
+import com.money.manager.application.dtos.UserResponseDto;
 import com.money.manager.domain.User;
-import com.money.manager.infrastructure.dtos.LoginRequestDTO;
-import com.money.manager.infrastructure.dtos.TokenResponseDTO;
-import com.money.manager.infrastructure.dtos.UserRequestDTO;
-import com.money.manager.infrastructure.dtos.UserResponseDto;
 
 public interface UserService {
     TokenResponseDTO login(LoginRequestDTO loginRequestDTO);

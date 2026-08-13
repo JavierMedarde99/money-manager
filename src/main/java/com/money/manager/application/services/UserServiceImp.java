@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 import com.money.manager.application.mappers.TokenMapper;
 import com.money.manager.application.mappers.UserMapper;
 import com.money.manager.domain.User;
-import com.money.manager.domain.services.TokenService;
-import com.money.manager.domain.services.UserService;
-import com.money.manager.infrastructure.dtos.LoginRequestDTO;
-import com.money.manager.infrastructure.dtos.TokenResponseDTO;
-import com.money.manager.infrastructure.dtos.UserRequestDTO;
-import com.money.manager.infrastructure.dtos.UserResponseDto;
+import com.money.manager.application.ports.TokenService;
+import com.money.manager.application.ports.UserService;
+import com.money.manager.application.dtos.LoginRequestDTO;
+import com.money.manager.application.dtos.TokenResponseDTO;
+import com.money.manager.application.dtos.UserRequestDTO;
+import com.money.manager.application.dtos.UserResponseDto;
 import com.money.manager.infrastructure.persistance.PostgresUserRespository;
 
 import jakarta.transaction.Transactional;
@@ -41,7 +41,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
             final Authentication authRequest = UserMapper.fromDto(loginRequestDTO);
             final Authentication authentication = authenticationManager.authenticate(authRequest);
 
-            return TokenMapper.toDto(tokenService.generateToken(authentication));
+            return TokenMapper.toDto(tokenService.generateToken(authentication.getName()));
         } catch (Exception e) {
             log.error("error to try login. Error: {}", e.getMessage(), e);
             throw e;

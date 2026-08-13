@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
-import com.money.manager.domain.services.DebtService;
-import com.money.manager.infrastructure.dtos.DebtRequestDTO;
-import com.money.manager.infrastructure.dtos.DebtResponseDTO;
+import com.money.manager.application.ports.DebtService;
+import com.money.manager.application.dtos.DebtRequestDTO;
+import com.money.manager.application.dtos.DebtResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 

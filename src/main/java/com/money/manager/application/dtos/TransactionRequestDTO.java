@@ -1,4 +1,4 @@
-package com.money.manager.infrastructure.dtos;
+package com.money.manager.application.dtos;
 
 public record TransactionRequestDTO(String name, String transactionDate, Integer amount, Double price,
         String transactionType,

@@ -1,11 +1,11 @@
-package com.money.manager.domain.services;
+package com.money.manager.application.ports;
 
 import java.util.List;
 
+import com.money.manager.application.dtos.DebtRequestDTO;
+import com.money.manager.application.dtos.DebtResponseDTO;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
-import com.money.manager.infrastructure.dtos.DebtRequestDTO;
-import com.money.manager.infrastructure.dtos.DebtResponseDTO;
 
 public interface DebtService {
     DebtResponseDTO insertDebt(DebtRequestDTO debtRequestDTO,User user);

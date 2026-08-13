@@ -8,8 +8,8 @@ import com.money.manager.domain.Transaction;
 import com.money.manager.domain.User;
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
-import com.money.manager.infrastructure.dtos.TransactionRequestDTO;
-import com.money.manager.infrastructure.dtos.TransactionResponseDTO;
+import com.money.manager.application.dtos.TransactionRequestDTO;
+import com.money.manager.application.dtos.TransactionResponseDTO;
 
 public class TransactionMapper {
     public static Transaction fromDto(TransactionRequestDTO transactionRequestDTO, User user,Category category) {

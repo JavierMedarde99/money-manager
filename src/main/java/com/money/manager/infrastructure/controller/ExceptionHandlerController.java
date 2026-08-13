@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.money.manager.domain.exception.NotFoundException;
-import com.money.manager.infrastructure.dtos.ErrorResponseDTO;
+import com.money.manager.application.dtos.ErrorResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 

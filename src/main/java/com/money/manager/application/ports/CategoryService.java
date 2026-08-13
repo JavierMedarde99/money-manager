@@ -1,11 +1,11 @@
-package com.money.manager.domain.services;
+package com.money.manager.application.ports;
 
 import java.util.List;
 
+import com.money.manager.application.dtos.CategoryRequestDTO;
+import com.money.manager.application.dtos.CategoryResponseDTO;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
-import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
-import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
 
 public interface CategoryService {
     List<CategoryResponseDTO> getCategoryByUser(User user);
