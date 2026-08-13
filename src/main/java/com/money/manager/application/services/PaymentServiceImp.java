@@ -11,12 +11,12 @@ import com.money.manager.application.mappers.PaymentMapper;
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.DebtRepository;
 import com.money.manager.domain.Payment;
+import com.money.manager.domain.PaymentRepository;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.services.PaymentService;
 import com.money.manager.infrastructure.dtos.PaymentRequestDTO;
 import com.money.manager.infrastructure.dtos.PaymentResponseDTO;
-import com.money.manager.infrastructure.persistance.PostgresPaymentRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PaymentServiceImp implements PaymentService{
 
-    private final PostgresPaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
     private final DebtRepository debtRepository;
 
     @Override

@@ -15,7 +15,13 @@ public interface TransactionRepository {
 
     List<Transaction> findByUserAndCategory(User user, Category category);
 
+    Optional<Transaction> findById(Long id);
+
     Optional<Transaction> findByIdAndUser_Id(Long id, Long userId);
+
+    Transaction save(Transaction transaction);
+
+    void delete(Transaction transaction);
 
     Page<Transaction> findByFilters(
             User user,

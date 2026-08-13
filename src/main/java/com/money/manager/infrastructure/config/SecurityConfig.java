@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.money.manager.infrastructure.persistance.PostgresUserRespository;
+import com.money.manager.domain.UserRepository;
 import com.money.manager.infrastructure.security.RateLimiterFilter;
 
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService(PostgresUserRespository repository) {
+    UserDetailsService userDetailsService(UserRepository repository) {
         return username -> repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

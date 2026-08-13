@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import com.money.manager.application.mappers.TokenMapper;
 import com.money.manager.application.mappers.UserMapper;
 import com.money.manager.domain.User;
+import com.money.manager.domain.UserRepository;
 import com.money.manager.domain.services.TokenService;
 import com.money.manager.domain.services.UserService;
 import com.money.manager.infrastructure.dtos.LoginRequestDTO;
 import com.money.manager.infrastructure.dtos.TokenResponseDTO;
 import com.money.manager.infrastructure.dtos.UserRequestDTO;
 import com.money.manager.infrastructure.dtos.UserResponseDto;
-import com.money.manager.infrastructure.persistance.PostgresUserRespository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final TokenService tokenService;
-    private final PostgresUserRespository postgresUserRespository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -50,14 +50,14 @@ public class UserServiceImp implements UserService, UserDetailsService {
 
     @Override
     public User getUser(String username) {
-        return postgresUserRespository.findByUsername(username).orElseThrow();
+        return userRepository.findByUsername(username).orElseThrow();
     }
 
     @Override
     public TokenResponseDTO createUser(final UserRequestDTO userRequestDTO) {
         User user = UserMapper.fromDto(userRequestDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        postgresUserRespository.save(user);
+        userRepository.save(user);
         return login(new LoginRequestDTO(user.getUsername(), userRequestDTO.password()));
     }
 
@@ -77,14 +77,14 @@ public class UserServiceImp implements UserService, UserDetailsService {
             user.setPassword(passwordEncoder.encode(dto.password()));
         }
 
-        User updatedUser = postgresUserRespository.save(user);
+        User updatedUser = userRepository.save(user);
 
         return UserMapper.toDto(updatedUser);
     }
 
     @Override
     public String deleteUser(User user){
-        postgresUserRespository.delete(user);
+        userRepository.delete(user);
         return "user delete";
     }
 }

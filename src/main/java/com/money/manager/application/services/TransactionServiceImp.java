@@ -12,6 +12,7 @@ import com.money.manager.application.mappers.CategoryMapper;
 import com.money.manager.application.mappers.TransactionMapper;
 import com.money.manager.domain.Category;
 import com.money.manager.domain.Transaction;
+import com.money.manager.domain.TransactionRepository;
 import com.money.manager.domain.User;
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
@@ -21,7 +22,6 @@ import com.money.manager.domain.services.TransactionService;
 import com.money.manager.infrastructure.dtos.TransactionFilter;
 import com.money.manager.infrastructure.dtos.TransactionRequestDTO;
 import com.money.manager.infrastructure.dtos.TransactionResponseDTO;
-import com.money.manager.infrastructure.persistance.PostgresTransactionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransactionServiceImp implements TransactionService {
 
-    private final PostgresTransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
     private final CategoryService categoryService;
 
     @Override
