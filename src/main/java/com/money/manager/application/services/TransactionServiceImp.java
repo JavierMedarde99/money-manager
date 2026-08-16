@@ -2,10 +2,10 @@ package com.money.manager.application.services;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.money.manager.application.mappers.CategoryMapper;
@@ -17,6 +17,8 @@ import com.money.manager.domain.User;
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
 import com.money.manager.domain.exception.NotFoundException;
+import com.money.manager.domain.paging.Page;
+import com.money.manager.domain.paging.SortDirection;
 import com.money.manager.application.ports.CategoryService;
 import com.money.manager.application.ports.TransactionService;
 import com.money.manager.application.dtos.TransactionFilter;
@@ -47,17 +49,27 @@ public class TransactionServiceImp implements TransactionService {
     public Page<TransactionResponseDTO> getAllTransaction(
             User user,
             TransactionFilter filter,
-            Pageable pageable) {
+            com.money.manager.domain.paging.Pageable pageable) {
 
-        Page<Transaction> transactions = transactionRepository.findByFilters(
+        Sort sort = pageable.direction() == SortDirection.DESC
+                ? Sort.by(pageable.sortBy()).descending()
+                : Sort.by(pageable.sortBy()).ascending();
+
+        org.springframework.data.domain.Pageable springPageable = org.springframework.data.domain.PageRequest.of(
+                pageable.page(), pageable.size(), sort);
+
+        org.springframework.data.domain.Page<Transaction> transactions = transactionRepository.findByFilters(
                 user,
                 filter.type(),
                 filter.subtype(),
                 filter.from(),
                 filter.to(),
-                pageable);
+                springPageable);
 
-        return transactions.map(TransactionMapper::toDto);
+        List<TransactionResponseDTO> content = transactions.getContent().stream().map(TransactionMapper::toDto).toList();
+
+        return Page.of(content, transactions.getNumber(), transactions.getSize(),
+                transactions.getTotalElements(), transactions.getTotalPages());
     }
 
     @Override

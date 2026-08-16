@@ -1,16 +1,14 @@
 package com.money.manager.application.services;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.money.manager.application.mappers.TokenMapper;
 import com.money.manager.application.mappers.UserMapper;
+import com.money.manager.application.ports.AuthenticationPort;
+import com.money.manager.application.ports.TokenService;
 import com.money.manager.domain.User;
 import com.money.manager.domain.UserRepository;
-import com.money.manager.application.ports.TokenService;
 import com.money.manager.application.ports.UserService;
 import com.money.manager.application.dtos.LoginRequestDTO;
 import com.money.manager.application.dtos.TokenResponseDTO;
@@ -19,30 +17,21 @@ import com.money.manager.application.dtos.UserResponseDto;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImp implements UserService {
 
-    private final AuthenticationConfiguration authenticationConfiguration;
+    private final AuthenticationPort authenticationPort;
     private final TokenService tokenService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public TokenResponseDTO login(final LoginRequestDTO loginRequestDTO) {
-        try {
-            final AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
-            final Authentication authRequest = UserMapper.fromDto(loginRequestDTO);
-            final Authentication authentication = authenticationManager.authenticate(authRequest);
-
-            return TokenMapper.toDto(tokenService.generateToken(authentication), tokenService.getExpirationSeconds());
-        } catch (Exception e) {
-            log.error("error to try login. Error: {}", e.getMessage(), e);
-            throw e;
-        }
+        authenticationPort.authenticate(loginRequestDTO.username(), loginRequestDTO.password());
+        return TokenMapper.toDto(tokenService.generateToken(loginRequestDTO.username()),
+                tokenService.getExpirationSeconds());
     }
 
     @Override

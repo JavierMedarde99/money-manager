@@ -1,4 +1,4 @@
-package com.money.manager.application.services;
+package com.money.manager.infrastructure.security;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -37,16 +36,16 @@ public class TokenServiceImp implements TokenService {
     private final JwtDecoder jwtDecoder;
 
     @Override
-    public String generateToken(Authentication authentication) {
+    public String generateToken(String username) {
         Instant now = Instant.now();
 
-        JwtClaimsSet claims = JwtClaimsSet.builder().subject(authentication.getName()).issuedAt(now)
+        JwtClaimsSet claims = JwtClaimsSet.builder().subject(username).issuedAt(now)
                 .expiresAt(now.plus(jwtExpiration, ChronoUnit.MINUTES))
                 .issuer(jwtIssuer)
                 .audience(List.of(jwtAudience))
                 .id(UUID.randomUUID().toString())
                 .build();
-        
+
         var jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
 
         return jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
