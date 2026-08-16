@@ -5,8 +5,8 @@ import java.time.format.DateTimeFormatter;
 
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.Payment;
-import com.money.manager.infrastructure.dtos.PaymentRequestDTO;
-import com.money.manager.infrastructure.dtos.PaymentResponseDTO;
+import com.money.manager.application.dtos.PaymentRequestDTO;
+import com.money.manager.application.dtos.PaymentResponseDTO;
 
 public class PaymentMapper {
     public static PaymentResponseDTO toDto(Payment payment) {

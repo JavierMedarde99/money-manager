@@ -1,4 +1,4 @@
-package com.money.manager.domain.services;
+package com.money.manager.application.ports;
 
 import org.springframework.security.core.Authentication;
 

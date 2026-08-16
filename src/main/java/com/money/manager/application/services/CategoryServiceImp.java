@@ -10,9 +10,9 @@ import com.money.manager.domain.Category;
 import com.money.manager.domain.CategoryRepository;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
-import com.money.manager.domain.services.CategoryService;
-import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
-import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
+import com.money.manager.application.ports.CategoryService;
+import com.money.manager.application.dtos.CategoryRequestDTO;
+import com.money.manager.application.dtos.CategoryResponseDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

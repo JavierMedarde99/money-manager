@@ -9,9 +9,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.money.manager.application.ports.TokenService;
+import com.money.manager.application.ports.UserService;
 import com.money.manager.domain.User;
-import com.money.manager.domain.services.TokenService;
-import com.money.manager.domain.services.UserService;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;

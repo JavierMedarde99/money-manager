@@ -10,12 +10,12 @@ import com.money.manager.application.mappers.TokenMapper;
 import com.money.manager.application.mappers.UserMapper;
 import com.money.manager.domain.User;
 import com.money.manager.domain.UserRepository;
-import com.money.manager.domain.services.TokenService;
-import com.money.manager.domain.services.UserService;
-import com.money.manager.infrastructure.dtos.LoginRequestDTO;
-import com.money.manager.infrastructure.dtos.TokenResponseDTO;
-import com.money.manager.infrastructure.dtos.UserRequestDTO;
-import com.money.manager.infrastructure.dtos.UserResponseDto;
+import com.money.manager.application.ports.TokenService;
+import com.money.manager.application.ports.UserService;
+import com.money.manager.application.dtos.LoginRequestDTO;
+import com.money.manager.application.dtos.TokenResponseDTO;
+import com.money.manager.application.dtos.UserRequestDTO;
+import com.money.manager.application.dtos.UserResponseDto;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

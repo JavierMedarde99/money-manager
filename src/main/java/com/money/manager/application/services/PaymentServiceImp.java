@@ -14,9 +14,9 @@ import com.money.manager.domain.Payment;
 import com.money.manager.domain.PaymentRepository;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
-import com.money.manager.domain.services.PaymentService;
-import com.money.manager.infrastructure.dtos.PaymentRequestDTO;
-import com.money.manager.infrastructure.dtos.PaymentResponseDTO;
+import com.money.manager.application.ports.PaymentService;
+import com.money.manager.application.dtos.PaymentRequestDTO;
+import com.money.manager.application.dtos.PaymentResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
