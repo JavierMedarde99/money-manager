@@ -9,6 +9,7 @@ import com.money.manager.application.ports.CategoryService;
 import com.money.manager.application.dtos.CategoryRequestDTO;
 import com.money.manager.application.dtos.CategoryResponseDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("")
-    public ResponseEntity<CategoryResponseDTO> insertCategory(@RequestBody CategoryRequestDTO categoryDto,
+    public ResponseEntity<CategoryResponseDTO> insertCategory(@RequestBody @Valid CategoryRequestDTO categoryDto,
             Authentication authentication) {
         return ResponseEntity.ok(categoryService.createCategory(categoryDto, (User) authentication.getPrincipal()));
     }
@@ -43,19 +44,19 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponseDTO> getOneCategory(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(categoryService.getCategory(id));
+    public ResponseEntity<CategoryResponseDTO> getOneCategory(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(categoryService.getCategory(id, (User) authentication.getPrincipal()));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long id,
-            @RequestBody CategoryRequestDTO categoryDto, Authentication authentication) throws NotFoundException {
+            @RequestBody @Valid CategoryRequestDTO categoryDto, Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(categoryService.updateCategory(categoryDto, id, (User) authentication.getPrincipal()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(categoryService.deleteCartegory(id));
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(categoryService.deleteCartegory(id, (User) authentication.getPrincipal()));
     }
 
 }

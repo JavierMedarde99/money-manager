@@ -9,6 +9,7 @@ import com.money.manager.application.ports.DebtService;
 import com.money.manager.application.dtos.DebtRequestDTO;
 import com.money.manager.application.dtos.DebtResponseDTO;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class DebtController {
     private final DebtService debtService;
 
     @PostMapping("")
-    public ResponseEntity<DebtResponseDTO> insertDebt(@RequestBody DebtRequestDTO debtRequestDTO, Authentication authentication) {
+    public ResponseEntity<DebtResponseDTO> insertDebt(@RequestBody @Valid DebtRequestDTO debtRequestDTO, Authentication authentication) {
         return ResponseEntity.ok(debtService.insertDebt(debtRequestDTO, (User) authentication.getPrincipal()));
     }
 
@@ -46,18 +47,18 @@ public class DebtController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<DebtResponseDTO> getDebt(@PathVariable Long id) throws NotFoundException {
-        return ResponseEntity.ok(debtService.getDebt(id));
+    public ResponseEntity<DebtResponseDTO> getDebt(@PathVariable Long id, Authentication authentication) throws NotFoundException {
+        return ResponseEntity.ok(debtService.getDebt(id, (User) authentication.getPrincipal()));
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<DebtResponseDTO> updateDebt(@PathVariable Long id, @RequestBody DebtRequestDTO debtRequestDTO, Authentication authentication) throws NotFoundException {
+    public ResponseEntity<DebtResponseDTO> updateDebt(@PathVariable Long id, @RequestBody @Valid DebtRequestDTO debtRequestDTO, Authentication authentication) throws NotFoundException {
         return ResponseEntity.ok(debtService.updateDebt(debtRequestDTO, id, (User) authentication.getPrincipal()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDebt(@PathVariable Long id) throws NotFoundException{
-        return ResponseEntity.ok(debtService.deleteDebt(id));
+    public ResponseEntity<String> deleteDebt(@PathVariable Long id, Authentication authentication) throws NotFoundException{
+        return ResponseEntity.ok(debtService.deleteDebt(id, (User) authentication.getPrincipal()));
     }
     
 }
