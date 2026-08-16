@@ -1,8 +1,8 @@
 package com.money.manager.application.mappers;
 
 import com.money.manager.domain.User;
-import com.money.manager.infrastructure.dtos.UserRequestDTO;
-import com.money.manager.infrastructure.dtos.UserResponseDto;
+import com.money.manager.application.dtos.UserRequestDTO;
+import com.money.manager.application.dtos.UserResponseDto;
 
 public class UserMapper {
     public static User fromDto(final UserRequestDTO userRequestDTO) {

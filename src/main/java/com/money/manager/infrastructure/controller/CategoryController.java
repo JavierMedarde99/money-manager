@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
-import com.money.manager.domain.services.CategoryService;
-import com.money.manager.infrastructure.dtos.CategoryRequestDTO;
-import com.money.manager.infrastructure.dtos.CategoryResponseDTO;
+import com.money.manager.application.ports.CategoryService;
+import com.money.manager.application.dtos.CategoryRequestDTO;
+import com.money.manager.application.dtos.CategoryResponseDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

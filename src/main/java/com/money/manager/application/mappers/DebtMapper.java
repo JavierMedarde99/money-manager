@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.User;
-import com.money.manager.infrastructure.dtos.DebtDTO;
-import com.money.manager.infrastructure.dtos.DebtRequestDTO;
-import com.money.manager.infrastructure.dtos.DebtResponseDTO;
+import com.money.manager.application.dtos.DebtDTO;
+import com.money.manager.application.dtos.DebtRequestDTO;
+import com.money.manager.application.dtos.DebtResponseDTO;
 
 public class DebtMapper {
     public static Debt fromDto(DebtRequestDTO debtRequestDTO, User user) {

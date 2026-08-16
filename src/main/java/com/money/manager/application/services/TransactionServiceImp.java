@@ -19,11 +19,11 @@ import com.money.manager.domain.enums.Type;
 import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.paging.Page;
 import com.money.manager.domain.paging.SortDirection;
-import com.money.manager.domain.services.CategoryService;
-import com.money.manager.domain.services.TransactionService;
-import com.money.manager.infrastructure.dtos.TransactionFilter;
-import com.money.manager.infrastructure.dtos.TransactionRequestDTO;
-import com.money.manager.infrastructure.dtos.TransactionResponseDTO;
+import com.money.manager.application.ports.CategoryService;
+import com.money.manager.application.ports.TransactionService;
+import com.money.manager.application.dtos.TransactionFilter;
+import com.money.manager.application.dtos.TransactionRequestDTO;
+import com.money.manager.application.dtos.TransactionResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 
