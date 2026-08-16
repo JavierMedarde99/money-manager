@@ -23,7 +23,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.money.manager.infrastructure.persistance.PostgresUserRespository;
+import com.money.manager.domain.UserRepository;
+import com.money.manager.infrastructure.security.RateLimiterFilter;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final RateLimiterFilter rateLimiterFilter;
 
     @Value("${app.cors.allowed-origins}")
     private String[] allowedOrigins;
@@ -51,6 +53,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
+                .addFilterBefore(rateLimiterFilter, JwtFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -69,7 +72,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService(PostgresUserRespository repository) {
+    UserDetailsService userDetailsService(UserRepository repository) {
         return username -> repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
