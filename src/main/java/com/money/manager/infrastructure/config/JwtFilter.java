@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.money.manager.domain.User;
 import com.money.manager.domain.services.TokenService;
 import com.money.manager.domain.services.UserService;
 
@@ -44,11 +44,11 @@ public class JwtFilter extends OncePerRequestFilter {
             String username = tokenService.getUserFromToken(jwt);
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userService.getUser(username);
+                User user = userService.getUser(username);
 
-                if (username.equals(userDetails.getUsername())) {
+                if (tokenService.validateToken(jwt) && username.equals(user.getUsername())) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
+                            user, null, java.util.List.of());
 
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);

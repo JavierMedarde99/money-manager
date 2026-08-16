@@ -31,9 +31,10 @@ public class DebtMapper {
     }
 
     public static DebtResponseDTO toDto(Debt debt) {
+        boolean hasPayments = debt.getPayments() != null && !debt.getPayments().isEmpty();
         return new DebtResponseDTO(debt.getId(), debt.getName(), debt.getTotalAmount(), debt.getStartDate().toString(),
                 debt.getEndDate() == null ? null : debt.getEndDate().toString(),
-                debt.getPayments().isEmpty() ? null
-                        : debt.getPayments().stream().map(payment -> PaymentMapper.toDto(payment)).toList());
+                hasPayments ? debt.getPayments().stream().map(payment -> PaymentMapper.toDto(payment)).toList()
+                        : null);
     }
 }

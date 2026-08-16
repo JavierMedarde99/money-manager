@@ -16,7 +16,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import com.money.manager.domain.User;
 import com.money.manager.domain.services.TokenService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,9 +40,7 @@ public class TokenServiceImp implements TokenService {
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
 
-        User currentUser = (User) authentication.getPrincipal();
-
-        JwtClaimsSet claims = JwtClaimsSet.builder().subject(currentUser.getUsername()).issuedAt(now)
+        JwtClaimsSet claims = JwtClaimsSet.builder().subject(authentication.getName()).issuedAt(now)
                 .expiresAt(now.plus(jwtExpiration, ChronoUnit.MINUTES))
                 .issuer(jwtIssuer)
                 .audience(List.of(jwtAudience))
