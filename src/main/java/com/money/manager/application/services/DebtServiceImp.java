@@ -28,7 +28,7 @@ public class DebtServiceImp implements DebtService{
     @Override
     public DebtResponseDTO insertDebt(DebtRequestDTO debtRequestDTO, User user) {
         Debt debt = DebtMapper.fromDto(debtRequestDTO, user);
-        debtRepository.save(debt);
+        debt = debtRepository.save(debt);
         return DebtMapper.toDto(debt);
     }
 
