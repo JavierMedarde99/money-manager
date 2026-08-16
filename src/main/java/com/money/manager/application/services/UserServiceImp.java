@@ -33,7 +33,8 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Override
     public TokenResponseDTO login(final LoginRequestDTO loginRequestDTO) {
         authenticationPort.authenticate(loginRequestDTO.username(), loginRequestDTO.password());
-        return TokenMapper.toDto(tokenService.generateToken(loginRequestDTO.username()));
+        return TokenMapper.toDto(tokenService.generateToken(loginRequestDTO.username()),
+                tokenService.getExpirationSeconds());
     }
 
     @Override
