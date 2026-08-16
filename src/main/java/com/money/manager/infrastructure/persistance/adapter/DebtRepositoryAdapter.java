@@ -36,6 +36,12 @@ public class DebtRepositoryAdapter implements DebtRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<Debt> findByIdAndUser_Id(Long id, Long userId) {
+        return jpa.findByIdAndUser_Id(id, userId).map(DebtJpaMapper::toDomain);
+    }
+
+    @Override
     @Transactional
     public Debt save(Debt debt) {
         UserJpa userJpa = jpaUser.findById(debt.getUser().getId())

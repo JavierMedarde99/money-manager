@@ -28,6 +28,12 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<Payment> findByIdAndDebt_User_Id(Long id, Long userId) {
+        return jpa.findByIdAndDebt_User_Id(id, userId).map(PaymentJpaMapper::toDomain);
+    }
+
+    @Override
     @Transactional
     public Payment save(Payment payment) {
         DebtJpa debtJpa = jpaDebt.findById(payment.getDebt().getId())

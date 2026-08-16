@@ -38,7 +38,7 @@ public class UserServiceImp implements UserService {
             final Authentication authRequest = UserMapper.fromDto(loginRequestDTO);
             final Authentication authentication = authenticationManager.authenticate(authRequest);
 
-            return TokenMapper.toDto(tokenService.generateToken(authentication));
+            return TokenMapper.toDto(tokenService.generateToken(authentication), tokenService.getExpirationSeconds());
         } catch (Exception e) {
             log.error("error to try login. Error: {}", e.getMessage(), e);
             throw e;

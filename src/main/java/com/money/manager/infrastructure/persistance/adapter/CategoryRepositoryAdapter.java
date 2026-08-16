@@ -36,6 +36,12 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<Category> findByIdAndUser_Id(Long id, Long userId) {
+        return jpa.findByIdAndUser_Id(id, userId).map(CategoryJpaMapper::toDomain);
+    }
+
+    @Override
     @Transactional
     public Category save(Category category) {
         UserJpa userJpa = jpaUser.findById(category.getUser().getId())

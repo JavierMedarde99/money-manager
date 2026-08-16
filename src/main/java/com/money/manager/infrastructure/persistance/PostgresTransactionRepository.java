@@ -2,6 +2,7 @@ package com.money.manager.infrastructure.persistance;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,8 @@ import com.money.manager.infrastructure.persistance.entity.UserJpa;
 public interface PostgresTransactionRepository extends JpaRepository<TransactionJpa, Long> {
 
     List<TransactionJpa> findByUser_Id(Long userId);
+
+    Optional<TransactionJpa> findByIdAndUser_Id(Long id, Long userId);
 
     List<TransactionJpa> findByUser_IdAndCategory_Id(Long userId, Long categoryId);
 

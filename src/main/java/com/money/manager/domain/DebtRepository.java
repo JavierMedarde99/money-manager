@@ -8,6 +8,8 @@ public interface DebtRepository {
 
     Optional<Debt> findById(Long id);
 
+    Optional<Debt> findByIdAndUser_Id(Long id, Long userId);
+
     Debt save(Debt debt);
 
     void delete(Debt debt);

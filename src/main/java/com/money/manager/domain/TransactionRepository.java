@@ -17,6 +17,8 @@ public interface TransactionRepository {
 
     Optional<Transaction> findById(Long id);
 
+    Optional<Transaction> findByIdAndUser_Id(Long id, Long userId);
+
     Transaction save(Transaction transaction);
 
     void delete(Transaction transaction);

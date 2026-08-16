@@ -51,6 +51,12 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<Transaction> findByIdAndUser_Id(Long id, Long userId) {
+        return jpa.findByIdAndUser_Id(id, userId).map(TransactionJpaMapper::toDomain);
+    }
+
+    @Override
     @Transactional
     public Transaction save(Transaction transaction) {
         UserJpa userJpa = jpaUser.findById(transaction.getUser().getId())

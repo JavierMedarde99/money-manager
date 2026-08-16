@@ -1,7 +1,15 @@
 package com.money.manager.infrastructure.dtos;
 
-public record TransactionRequestDTO(String name, String transactionDate, Integer amount, Double price,
-        String transactionType,
-        String transactionSubtype, CategoryResponseDTO category) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
+public record TransactionRequestDTO(
+        @NotBlank String name,
+        @NotBlank String transactionDate,
+        @Positive Integer amount,
+        @Positive Double price,
+        @NotBlank String transactionType,
+        @NotBlank String transactionSubtype,
+        @NotNull CategoryResponseDTO category) {
 }

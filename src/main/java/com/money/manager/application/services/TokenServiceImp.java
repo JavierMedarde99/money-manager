@@ -2,11 +2,12 @@ package com.money.manager.application.services;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -26,6 +27,12 @@ public class TokenServiceImp implements TokenService {
     @Value("${jwt.expiration}")
     private int jwtExpiration;
 
+    @Value("${jwt.issuer}")
+    private String jwtIssuer;
+
+    @Value("${jwt.audience}")
+    private String jwtAudience;
+
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
 
@@ -34,11 +41,20 @@ public class TokenServiceImp implements TokenService {
         Instant now = Instant.now();
 
         JwtClaimsSet claims = JwtClaimsSet.builder().subject(authentication.getName()).issuedAt(now)
-                .expiresAt(now.plus(jwtExpiration, ChronoUnit.MINUTES)).build();
+                .expiresAt(now.plus(jwtExpiration, ChronoUnit.MINUTES))
+                .issuer(jwtIssuer)
+                .audience(List.of(jwtAudience))
+                .id(UUID.randomUUID().toString())
+                .build();
         
         var jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
 
         return jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
+    }
+
+    @Override
+    public long getExpirationSeconds() {
+        return jwtExpiration * 60L;
     }
 
     @Override
@@ -54,7 +70,7 @@ public class TokenServiceImp implements TokenService {
             jwtDecoder.decode(token);
             return true;
         } catch (Exception e) {
-            throw new BadJwtException("Error while trying to validate token");
+            return false;
         }
     }
 
