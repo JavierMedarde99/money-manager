@@ -5,6 +5,13 @@
 Always use the correct mvp and clean code.
 For every requested change, you must always create a brand new issue, branch, and PR; never reuse any closed ones. Do not apply changes directly. The PR will not be merged until it is approved, and only approved branches may be merged.
 
+When the user asks for a change, the expected workflow is:
+1. Create a GitHub issue describing the change.
+2. Create a feature branch from `main` (e.g. `fix/login-error-messages`).
+3. Make the changes, commit, and push.
+4. Open a PR referencing the issue (e.g. `Closes #12`).
+5. Do NOT merge the PR — the user will review and merge it.
+
 ## Build & Run
 
 ```bash
