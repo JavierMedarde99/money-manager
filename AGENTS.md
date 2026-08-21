@@ -3,7 +3,7 @@
 ## Instructions
 
 Always use the correct mvp and clean code.
-For every requested change, you must first create an issue, a branch, and a PR with the modifications; do not apply changes directly. The PR will not be merged until it is approved, and only approved branches may be merged.
+For every requested change, you must always create a brand new issue, branch, and PR; never reuse any closed ones. Do not apply changes directly. The PR will not be merged until it is approved, and only approved branches may be merged.
 
 ## Build & Run
 
