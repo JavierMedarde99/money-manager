@@ -90,6 +90,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "https://money-manager-front-end-weld.vercel.app",
+                "https://expense-manager-new.onrender.com",
                 "http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
