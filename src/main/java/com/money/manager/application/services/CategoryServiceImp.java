@@ -55,7 +55,7 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public String deleteCartegory(Long categoryId, User user) throws NotFoundException{
+    public String deleteCategory(Long categoryId, User user) throws NotFoundException{
         Category category = findCategoryById(categoryId, user);
         categoryRepository.delete(category);
         return "category delete";
