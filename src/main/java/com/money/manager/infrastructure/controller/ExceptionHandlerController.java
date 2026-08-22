@@ -21,8 +21,8 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponseDTO> errorCredentials(BadCredentialsException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponseDTO(HttpStatus.NOT_FOUND.value(), "User not found"));
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponseDTO(HttpStatus.UNAUTHORIZED.value(), "Invalid credentials"));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -69,7 +69,7 @@ public class ExceptionHandlerController {
     public ResponseEntity<ErrorResponseDTO> errorInvalidDate(java.time.format.DateTimeParseException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponseDTO(HttpStatus.BAD_REQUEST.value(),
-                        "invalid date format, expected dd-MM-yyyy"));
+                        "invalid date format, expected yyyy-MM-dd"));
     }
 
     @ExceptionHandler(Exception.class)
