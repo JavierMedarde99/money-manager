@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Type {
-    INCOME("income"), EXPENSES("expenses");
+    INCOME("income"), EXPENSE("expense");
 
     private String name;
 

@@ -13,7 +13,7 @@ import com.money.manager.application.dtos.TransactionResponseDTO;
 
 public class TransactionMapper {
     public static Transaction fromDto(TransactionRequestDTO transactionRequestDTO, User user,Category category) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate date = LocalDate.parse(transactionRequestDTO.transactionDate(), formatter);
         return Transaction.builder()
                 .user(user)
