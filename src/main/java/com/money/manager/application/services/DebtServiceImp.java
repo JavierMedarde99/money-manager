@@ -48,7 +48,7 @@ public class DebtServiceImp implements DebtService{
 
     @Override
     public DebtResponseDTO updateDebt(DebtRequestDTO debtRequestDTO, Long id, User user) throws NotFoundException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         Debt debt = getDebtById(id, user);
         debt.setStartDate(LocalDate.parse(debtRequestDTO.startDate(), formatter));
         debt.setName(debtRequestDTO.name());

@@ -14,7 +14,7 @@ public class PaymentMapper {
     }
 
     public static Payment fromDto(PaymentRequestDTO paymentRequestDTO, Debt debt) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate date = LocalDate.parse(paymentRequestDTO.paymentDate(), formatter);
         return Payment.builder().amount(paymentRequestDTO.amount()).paymentDate(date)
                 .debt(debt).build();
