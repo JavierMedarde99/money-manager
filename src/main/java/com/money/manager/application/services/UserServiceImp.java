@@ -12,6 +12,7 @@ import com.money.manager.domain.UserRepository;
 import com.money.manager.application.ports.UserService;
 import com.money.manager.application.dtos.LoginRequestDTO;
 import com.money.manager.application.dtos.TokenResponseDTO;
+import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.application.dtos.UserRequestDTO;
 import com.money.manager.application.dtos.UserResponseDto;
 
@@ -36,7 +37,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User getUser(String username) {
-        return userRepository.findByUsername(username).orElseThrow();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override
