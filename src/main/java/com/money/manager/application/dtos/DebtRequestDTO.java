@@ -6,6 +6,6 @@ import jakarta.validation.constraints.Positive;
 public record DebtRequestDTO(
         @NotBlank String name,
         @Positive Double totalAmount,
-        @NotBlank String starDate,
+        @NotBlank String startDate,
         String endDate) {
 }
