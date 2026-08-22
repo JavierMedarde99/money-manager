@@ -11,7 +11,7 @@ import com.money.manager.application.dtos.DebtResponseDTO;
 
 public class DebtMapper {
     public static Debt fromDto(DebtRequestDTO debtRequestDTO, User user) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate dateStart = LocalDate.parse(debtRequestDTO.startDate(), formatter);
         LocalDate dateEnd = debtRequestDTO.endDate() == null ? null
                 : LocalDate.parse(debtRequestDTO.endDate(), formatter);
@@ -21,7 +21,7 @@ public class DebtMapper {
     }
 
     public static Debt fromDto(DebtDTO debtResponseDTO, User user) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         LocalDate dateStart = LocalDate.parse(debtResponseDTO.startDate(), formatter);
         LocalDate dateEnd = debtResponseDTO.endDate() == null ? null
                 : LocalDate.parse(debtResponseDTO.endDate(), formatter);

@@ -45,7 +45,7 @@ public class PaymentServiceImp implements PaymentService{
 
     @Override
     public PaymentResponseDTO updatePayment(PaymentRequestDTO paymentRequestDTO, Long id, User user) throws NotFoundException{
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         Payment payment = findById(id, user);
         payment.setAmount(paymentRequestDTO.amount());
         payment.setPaymentDate(LocalDate.parse(paymentRequestDTO.paymentDate(), formatter));
