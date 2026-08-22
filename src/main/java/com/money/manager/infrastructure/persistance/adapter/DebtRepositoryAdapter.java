@@ -12,7 +12,6 @@ import com.money.manager.infrastructure.persistance.PostgresDebtRepository;
 import com.money.manager.infrastructure.persistance.PostgresUserRepository;
 import com.money.manager.infrastructure.persistance.entity.UserJpa;
 import com.money.manager.infrastructure.persistance.mapper.DebtJpaMapper;
-import com.money.manager.infrastructure.persistance.mapper.UserJpaMapper;
 
 import lombok.RequiredArgsConstructor;
 

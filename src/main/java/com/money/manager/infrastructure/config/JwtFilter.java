@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.money.manager.application.ports.TokenService;
 import com.money.manager.application.ports.UserService;
 import com.money.manager.domain.User;
+import com.money.manager.domain.exception.NotFoundException;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -55,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
 
-        } catch (JwtException | UsernameNotFoundException | IllegalArgumentException ex) {
+        } catch (JwtException | UsernameNotFoundException | IllegalArgumentException | NotFoundException ex) {
             SecurityContextHolder.clearContext();
         }
 

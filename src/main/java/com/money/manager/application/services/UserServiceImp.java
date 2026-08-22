@@ -36,7 +36,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User getUser(String username) {
+    public User getUser(String username) throws NotFoundException {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }

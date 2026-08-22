@@ -12,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
-import com.money.manager.infrastructure.persistance.entity.CategoryJpa;
 import com.money.manager.infrastructure.persistance.entity.TransactionJpa;
 import com.money.manager.infrastructure.persistance.entity.UserJpa;
 

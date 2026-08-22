@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.Payment;
 import com.money.manager.infrastructure.persistance.entity.DebtJpa;
-import com.money.manager.infrastructure.persistance.entity.PaymentJpa;
 import com.money.manager.infrastructure.persistance.entity.UserJpa;
 
 public class DebtJpaMapper {
