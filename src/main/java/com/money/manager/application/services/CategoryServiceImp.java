@@ -36,6 +36,11 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
+    public Category findCategory(Long categoryId, User user) throws NotFoundException {
+        return findCategoryById(categoryId, user);
+    }
+
+    @Override
     public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO, User user) {
         Category category = CategoryMapper.fromDto(categoryDTO, user);
         categoryRepository.save(category);

@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.money.manager.application.mappers.CategoryMapper;
 import com.money.manager.application.mappers.TransactionMapper;
 import com.money.manager.domain.Category;
 import com.money.manager.domain.Transaction;
@@ -37,9 +36,7 @@ public class TransactionServiceImp implements TransactionService {
     @Override
     public TransactionResponseDTO createTransaction(TransactionRequestDTO transactionRequestDTO, User user)
             throws NotFoundException {
-        Category category = CategoryMapper.fromDto(categoryService.getCategory(transactionRequestDTO.category().id(),
-                user),
-                user);
+        Category category = categoryService.findCategory(transactionRequestDTO.category().id(), user);
         Transaction transaction = TransactionMapper.fromDto(transactionRequestDTO, user, category);
         transactionRepository.save(transaction);
         return TransactionMapper.toDto(transaction);
@@ -88,8 +85,7 @@ public class TransactionServiceImp implements TransactionService {
         transaction.setAmount(transactionRequestDTO.amount());
         transaction.setSubtype(Subtype.getSubTypeByName(transactionRequestDTO.transactionSubtype()));
         transaction.setType(Type.getTypeByName(transactionRequestDTO.transactionType()));
-        transaction.setCategory(CategoryMapper.fromDto(categoryService.getCategory(transactionRequestDTO.category().id(),
-                user),
+        transaction.setCategory(categoryService.findCategory(transactionRequestDTO.category().id(),
                 user));
         transactionRepository.save(transaction);
         return TransactionMapper.toDto(transaction);
