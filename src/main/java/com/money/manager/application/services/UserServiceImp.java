@@ -66,8 +66,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public String deleteUser(User user){
+    public void deleteUser(User user){
         userRepository.delete(user);
-        return "user delete";
     }
 }

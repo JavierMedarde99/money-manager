@@ -12,5 +12,5 @@ public interface UserService {
     User getUser(String username) throws NotFoundException;
     TokenResponseDTO createUser(UserRequestDTO userRequestDto);
     UserResponseDto updateUser(UserRequestDTO userRequestDto, User user);
-    String deleteUser(User user);
+    void deleteUser(User user);
 }
