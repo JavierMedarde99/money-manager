@@ -53,8 +53,9 @@ public class UserController {
     }
 
     @DeleteMapping("")
-    public ResponseEntity<String> deleteUserController(Authentication authentication){
-        return ResponseEntity.ok(userService.deleteUser((User) authentication.getPrincipal()));
+    public ResponseEntity<Void> deleteUserController(Authentication authentication){
+        userService.deleteUser((User) authentication.getPrincipal());
+        return ResponseEntity.noContent().build();
     }
     
 
