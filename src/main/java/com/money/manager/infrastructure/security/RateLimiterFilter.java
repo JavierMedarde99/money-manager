@@ -38,7 +38,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         }
 
         // key is remote access to identify the user making the call.
-        String key = (isLogin ? "login:" : "register:") + request.getRemoteAddr();
+        String key = (isLogin ? "login:" : "register:") + request.getRemoteAddr() + ":" + request.getHeader("User-Agent");
         int maxRequests = isLogin ? MAX_LOGIN_REQUESTS : MAX_REGISTER_REQUESTS;
 
         if (!rateLimiterService.isAllowed(key, maxRequests, WINDOW_MILLIS)) {
