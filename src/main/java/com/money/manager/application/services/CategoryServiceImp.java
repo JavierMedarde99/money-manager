@@ -43,9 +43,8 @@ public class CategoryServiceImp implements CategoryService {
     @Override
     public CategoryResponseDTO createCategory(CategoryRequestDTO categoryDTO, User user) {
         Category category = CategoryMapper.fromDto(categoryDTO, user);
-        categoryRepository.save(category);
+        category = categoryRepository.save(category);
         return CategoryMapper.toDto(category);
-
     }
 
     @Transactional

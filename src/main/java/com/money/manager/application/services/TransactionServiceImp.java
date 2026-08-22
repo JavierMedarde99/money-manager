@@ -38,7 +38,7 @@ public class TransactionServiceImp implements TransactionService {
             throws NotFoundException {
         Category category = categoryService.findCategory(transactionRequestDTO.category().id(), user);
         Transaction transaction = TransactionMapper.fromDto(transactionRequestDTO, user, category);
-        transactionRepository.save(transaction);
+        transaction = transactionRepository.save(transaction);
         return TransactionMapper.toDto(transaction);
     }
 
