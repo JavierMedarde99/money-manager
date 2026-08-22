@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,7 +36,8 @@ public class TransactionJpa {
     private String name;
     private LocalDate dateTransaction;
     private Integer amount;
-    private Double prices;
+    @Column(name = "prices")
+    private Double price;
     @Enumerated(EnumType.STRING)
     private Type type;
     @Enumerated(EnumType.STRING)

@@ -20,7 +20,7 @@ public class TransactionMapper {
                 .category(category)
                 .amount(transactionRequestDTO.amount())
                 .name(transactionRequestDTO.name())
-                .prices(transactionRequestDTO.price())
+                .price(transactionRequestDTO.price())
                 .subtype(Subtype.getSubTypeByName(transactionRequestDTO.transactionSubtype()))
                 .type(Type.getTypeByName(transactionRequestDTO.transactionType()))
                 .dateTransaction(date)
@@ -29,7 +29,7 @@ public class TransactionMapper {
 
     public static TransactionResponseDTO toDto(Transaction transaction){
         return new TransactionResponseDTO(transaction.getId(),transaction.getName(), transaction.getDateTransaction().toString(), 
-        transaction.getAmount(), transaction.getPrices(), transaction.getType().getName(), 
+        transaction.getAmount(), transaction.getPrice(), transaction.getType().getName(), 
         transaction.getSubtype().getName(), 
         CategoryMapper.toDto(transaction.getCategory()));
     }
