@@ -80,7 +80,7 @@ public class TransactionServiceImp implements TransactionService {
 
     @Override
     public TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO, Long transactionId,User user) throws NotFoundException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         Transaction transaction = findById(transactionId, user);
         transaction.setName(transactionRequestDTO.name());
         transaction.setDateTransaction( LocalDate.parse(transactionRequestDTO.transactionDate(), formatter));

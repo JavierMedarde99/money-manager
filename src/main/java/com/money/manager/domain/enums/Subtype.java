@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Subtype {
-    FIXED("fixed"),VARIABLE("variable");
+    FIXED("fixed"), VARIABLE("variable");
 
     private final String name;
 
