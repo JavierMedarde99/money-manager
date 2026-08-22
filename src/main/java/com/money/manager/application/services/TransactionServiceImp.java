@@ -84,7 +84,7 @@ public class TransactionServiceImp implements TransactionService {
         Transaction transaction = findById(transactionId, user);
         transaction.setName(transactionRequestDTO.name());
         transaction.setDateTransaction( LocalDate.parse(transactionRequestDTO.transactionDate(), formatter));
-        transaction.setPrices(transactionRequestDTO.price());
+        transaction.setPrice(transactionRequestDTO.price());
         transaction.setAmount(transactionRequestDTO.amount());
         transaction.setSubtype(Subtype.getSubTypeByName(transactionRequestDTO.transactionSubtype()));
         transaction.setType(Type.getTypeByName(transactionRequestDTO.transactionType()));

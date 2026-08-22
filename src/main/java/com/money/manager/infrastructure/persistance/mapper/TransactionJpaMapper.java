@@ -10,14 +10,14 @@ public class TransactionJpaMapper {
     public static TransactionJpa toJpa(Transaction transaction, UserJpa userJpa, CategoryJpa categoryJpa) {
         return TransactionJpa.builder().id(transaction.getId()).name(transaction.getName())
                 .dateTransaction(transaction.getDateTransaction()).amount(transaction.getAmount())
-                .prices(transaction.getPrices()).type(transaction.getType()).subtype(transaction.getSubtype())
+                .price(transaction.getPrice()).type(transaction.getType()).subtype(transaction.getSubtype())
                 .user(userJpa).category(categoryJpa).build();
     }
 
     public static Transaction toDomain(TransactionJpa jpa) {
         return Transaction.builder().id(jpa.getId()).name(jpa.getName())
                 .dateTransaction(jpa.getDateTransaction()).amount(jpa.getAmount())
-                .prices(jpa.getPrices()).type(jpa.getType()).subtype(jpa.getSubtype())
+                .price(jpa.getPrice()).type(jpa.getType()).subtype(jpa.getSubtype())
                 .user(UserJpaMapper.toDomain(jpa.getUser()))
                 .category(CategoryJpaMapper.toDomain(jpa.getCategory()))
                 .build();

@@ -21,7 +21,7 @@ public class Transaction {
     private String name;
     private LocalDate dateTransaction;
     private Integer amount;
-    private Double prices;
+    private Double price;
     private Type type;
     private Subtype subtype;
     private User user;
