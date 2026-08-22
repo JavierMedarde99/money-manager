@@ -54,7 +54,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id, Authentication authentication) throws NotFoundException {
-        return ResponseEntity.ok(categoryService.deleteCartegory(id, (User) authentication.getPrincipal()));
+        return ResponseEntity.ok(categoryService.deleteCategory(id, (User) authentication.getPrincipal()));
     }
 
 }
