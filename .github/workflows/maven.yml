@@ -1,0 +1,23 @@
+name: Spring Boot Test
+
+on:
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Copiar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+          cache: 'maven'
+
+      - name: Ejecutar test con Maven
+        run: mvn test
