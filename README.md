@@ -113,15 +113,42 @@ Available at `/swagger-ui/index.html` (no auth required).
 ## Build & Run
 
 ```bash
-# Build (skip tests — they need a running DB)
+# Build
 mvn clean package -DskipTests -o
 
 # Run (requires PostgreSQL on localhost:5432)
 mvn spring-boot:run
 
-# Run tests
+# Run tests (unit + controller slice tests need no DB; the full-context test self-skips without PostgreSQL/JWT_KEY)
 mvn test
 ```
+
+## Testing
+
+57 tests (JUnit 5 + Mockito + MockMvc) covering services, controllers and security filters.
+
+### Unit tests
+
+| Test class | Covers |
+|------------|--------|
+| `application/services/UserServiceImpTest` | login (success / bad credentials), getUser, createUser (password encoding + auto-login), updateUser (with / null / blank password), deleteUser |
+| `application/services/TransactionServiceImpTest` | create, get, update, delete, getAll — DTO mapping, ownership checks (`NotFoundException`), pagination sort ASC/DESC, filter forwarding to repository |
+| `infrastructure/config/JwtFilterTest` | missing / non-Bearer header, valid token sets authentication with `User` principal, invalid token / unknown user clears `SecurityContext`, `validateToken=false`, existing authentication not overridden |
+| `infrastructure/security/RateLimiterFilterTest` | only `POST /user/login` and `POST /user` are limited; 429 JSON body when exceeded; bucket key = endpoint : IP : User-Agent; limits 5/min login, 10/min register |
+| `infrastructure/security/RateLimiterServiceTest` | sliding window: allows up to max then blocks, independent buckets per client |
+
+### Integration tests (@WebMvcTest slices)
+
+| Test class | Covers |
+|------------|--------|
+| `infrastructure/controller/UserControllerTest` | all `/user` endpoints incl. validation errors (400), bad credentials (401), delete returns 204 |
+| `infrastructure/controller/TransactionControllerTest` | all `/transaction` endpoints incl. filter forwarding, validation (400), not found (404) |
+
+Controller slices don't require a database or JWT key: services are mocked with `@MockitoBean`, the security filters are excluded from the slice, and a permissive test `SecurityFilterChain` is used so the authenticated principal can be injected per request.
+
+### Full-context smoke test
+
+`ManagerApplicationTests.contextLoads` boots the entire application and requires PostgreSQL on `localhost:5432` plus a `JWT_KEY`. When either is unavailable it is skipped automatically via `@EnabledIf`.
 
 ## Environment Variables
 
