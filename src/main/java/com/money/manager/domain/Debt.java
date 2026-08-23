@@ -22,4 +22,8 @@ public class Debt {
     private LocalDate endDate;
     private User user;
     private Set<Payment> payments;
+
+    public void endDebt(){
+        this.endDate = LocalDate.now();
+    }
 }

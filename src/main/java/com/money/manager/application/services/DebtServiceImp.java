@@ -69,5 +69,12 @@ public class DebtServiceImp implements DebtService{
         Optional<Debt> optDebt = debtRepository.findByIdAndUser_Id(id, user.getId());
         return optDebt.orElseThrow(() -> new NotFoundException()); 
     }
+
+    @Override
+    @Transactional
+    public void closeDebt(Debt debt) {
+        debt.endDebt();
+        debtRepository.save(debt);
+    }
     
 }

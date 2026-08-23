@@ -2,6 +2,7 @@ package com.money.manager.application.ports;
 
 import java.util.List;
 
+import com.money.manager.domain.Debt;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.application.dtos.DebtRequestDTO;
@@ -13,4 +14,5 @@ public interface DebtService {
     DebtResponseDTO getDebt(Long id, User user) throws NotFoundException;
     DebtResponseDTO updateDebt(DebtRequestDTO debtRequestDTO,Long id, User user) throws NotFoundException;
     String deleteDebt(Long id, User user) throws NotFoundException;
+    void closeDebt(Debt debt);
 }

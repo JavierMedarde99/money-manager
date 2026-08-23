@@ -14,6 +14,7 @@ import com.money.manager.domain.Payment;
 import com.money.manager.domain.PaymentRepository;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
+import com.money.manager.application.ports.DebtService;
 import com.money.manager.application.ports.PaymentService;
 import com.money.manager.application.dtos.PaymentRequestDTO;
 import com.money.manager.application.dtos.PaymentResponseDTO;
@@ -26,6 +27,7 @@ public class PaymentServiceImp implements PaymentService{
 
     private final PaymentRepository paymentRepository;
     private final DebtRepository debtRepository;
+    private final DebtService debtService;
 
     @Override
     @Transactional
@@ -33,6 +35,10 @@ public class PaymentServiceImp implements PaymentService{
         Debt debt = debtRepository.findByIdAndUser_Id(paymentRequestDTO.debt().id(), user.getId())
                 .orElseThrow(() -> new NotFoundException("debt not found"));
         Payment payment = PaymentMapper.fromDto(paymentRequestDTO, debt);
+        Double totalPaid = debt.getPayments().stream().mapToDouble(Payment::getAmount).sum();
+        if(totalPaid+ paymentRequestDTO.amount() >= debt.getTotalAmount()) {
+            debtService.closeDebt(debt);
+        }
         payment = paymentRepository.save(payment);
         return PaymentMapper.toDto(payment);
     }
