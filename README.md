@@ -2,13 +2,16 @@
 
 Personal finance REST API built with Spring Boot 4.1.0 and Java 25.
 
+[![Live API](https://img.shields.io/badge/Live_API-Expense_Manager-green)](https://expense-manager-new.onrender.com)
+[![Swagger UI](https://img.shields.io/badge/Swagger_UI-OpenAPI-docs)](https://expense-manager-new.onrender.com/swagger-ui/index.html)
+
 ## Stack
 
 - **Java 25** + **Spring Boot 4.1.0**
 - **PostgreSQL** (localhost:5432 / Render)
 - **JWT** (HS256 via jjwt, stateless auth)
 - **Spring Security** (BCrypt passwords, filter chain)
-- **springdoc-openapi 3.1.0** (Swagger UI)
+- **springdoc-openapi 3.1.0** ([Swagger UI](https://expense-manager-new.onrender.com/swagger-ui/index.html))
 - **Lombok**
 - **Hexagonal architecture** (domain / application / infrastructure)
 
@@ -19,6 +22,59 @@ src/main/java/com/money/manager/
 ├── domain/                  # Entities, repository interfaces, enums, exceptions, paging
 ├── application/             # Service ports (interfaces), DTOs, mappers
 └── infrastructure/          # Controllers, Spring Security, JPA adapters, config
+```
+
+## Entity-Relationship Diagram
+
+```mermaid
+erDiagram
+    USERS {
+        bigint id PK
+        varchar username UK
+        varchar password
+        varchar email UK
+    }
+
+    CATEGORIES {
+        bigint id PK
+        varchar name
+        varchar color
+        bigint user_id FK
+    }
+
+    TRANSACTIONS {
+        bigint id PK
+        varchar name
+        date date_transaction
+        int amount
+        double prices
+        varchar type
+        varchar subtype
+        bigint user_id FK
+        bigint category_id FK
+    }
+
+    DEBTS {
+        bigint id PK
+        varchar name
+        double total_amount
+        date start_date
+        date end_date
+        bigint user_id FK
+    }
+
+    PAYMENTS {
+        bigint id PK
+        date payment_date
+        double amount
+        bigint debt_id FK
+    }
+
+    USERS ||--o{ CATEGORIES : "owns"
+    USERS ||--o{ TRANSACTIONS : "owns"
+    USERS ||--o{ DEBTS : "owns"
+    CATEGORIES ||--o{ TRANSACTIONS : "classified_by"
+    DEBTS ||--o{ PAYMENTS : "paid_via"
 ```
 
 ## Authentication
@@ -32,12 +88,14 @@ Stateless JWT. Every endpoint except login/register/health requires `Authorizati
 
 ## API Endpoints
 
+Full interactive docs: **[Swagger UI](https://expense-manager-new.onrender.com/swagger-ui/index.html)**
+
 ### User (`/user`)
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
+| POST | `/user` | No | Register new user (returns JWT) |
 | POST | `/user/login` | No | Login, returns JWT |
-| POST | `/user` | No | Register new user |
 | GET | `/user` | Yes | Get current user profile |
 | PUT | `/user` | Yes | Update username/email/password |
 | DELETE | `/user` | Yes | Delete account (204) |
@@ -92,10 +150,6 @@ Stateless JWT. Every endpoint except login/register/health requires `Authorizati
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/health` | No | Liveness check |
-
-### Swagger UI
-
-Available at `/swagger-ui/index.html` (no auth required).
 
 ## Domain
 
@@ -152,15 +206,28 @@ Controller slices don't require a database or JWT key: services are mocked with 
 
 ## Environment Variables
 
+### Dev profile
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `JWT_KEY` | *(required)* | HS256 signing key |
+| `JWT_KEY` | *(empty)* | HS256 signing key |
 | `JWT_EXPIRATION` | 30 | Token TTL in minutes |
+| `JWT_ISSUER` | manager | JWT issuer claim |
+| `JWT_AUDIENCE` | money-manager-frontend | JWT audience claim |
 | `DATABASE_URL` | `jdbc:postgresql://localhost:5432/money_manager` | JDBC URL |
 | `DATABASE_USERNAME` | postgres | DB user |
 | `DATABASE_PASSWORD` | *(empty)* | DB password |
 | `SPRING_PROFILES_DEFAULT` | dev | Active profile |
-| `PORT` | 8080 | Server port (Dockerfile) |
+
+### Prod profile
+
+| Variable | Description |
+|----------|-------------|
+| `POSTGRESQL_URL` | JDBC URL (schema `money_manager` appended automatically) |
+| `POSTGRESQL_USER` | DB user |
+| `POSTGRESQL_PASSWORD` | DB password |
+| `JWT_KEY` | HS256 signing key |
+| `PORT` | Server port (Dockerfile default: 8080) |
 
 ## Deployment
 
