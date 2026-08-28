@@ -17,5 +17,6 @@ public class Payment {
     private Long id;
     private LocalDate paymentDate;
     private Double amount;
+    private Boolean automaticPayment;
     private Debt debt;
 }

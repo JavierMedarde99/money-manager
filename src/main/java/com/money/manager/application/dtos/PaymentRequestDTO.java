@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Positive;
 
 public record PaymentRequestDTO(
         @NotBlank String paymentDate,
-        @Positive Double amount,
+        @Positive Double amount,                
+        @NotNull Boolean automaticPayment,
         @NotNull DebtDTO debt) {
 }

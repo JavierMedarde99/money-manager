@@ -29,6 +29,7 @@ public class PaymentJpa {
 
     private LocalDate paymentDate;
     private Double amount;
+    private Boolean automaticPayment;
 
     @ManyToOne
     @JoinColumn(name = "debt_id")

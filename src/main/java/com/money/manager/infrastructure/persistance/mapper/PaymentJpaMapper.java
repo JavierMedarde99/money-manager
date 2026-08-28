@@ -8,12 +8,12 @@ public class PaymentJpaMapper {
 
     public static PaymentJpa toJpa(Payment payment, DebtJpa debtJpa) {
         return PaymentJpa.builder().id(payment.getId()).paymentDate(payment.getPaymentDate())
-                .amount(payment.getAmount()).debt(debtJpa).build();
+                .amount(payment.getAmount()).automaticPayment(payment.getAutomaticPayment()).debt(debtJpa).build();
     }
 
     public static Payment toDomain(PaymentJpa jpa) {
         return Payment.builder().id(jpa.getId()).paymentDate(jpa.getPaymentDate())
-                .amount(jpa.getAmount())
+                .amount(jpa.getAmount()).automaticPayment(jpa.getAutomaticPayment())
                 .debt(jpa.getDebt() == null ? null
                         : com.money.manager.domain.Debt.builder().id(jpa.getDebt().getId()).build())
                 .build();

@@ -55,6 +55,7 @@ public class PaymentServiceImp implements PaymentService{
         Payment payment = findById(id, user);
         payment.setAmount(paymentRequestDTO.amount());
         payment.setPaymentDate(LocalDate.parse(paymentRequestDTO.paymentDate(), formatter));
+        payment.setAutomaticPayment(paymentRequestDTO.automaticPayment());
         paymentRepository.save(payment);
         return PaymentMapper.toDto(payment);
     }
