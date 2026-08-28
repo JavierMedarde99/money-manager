@@ -13,6 +13,12 @@ import com.money.manager.domain.enums.Type;
 public interface TransactionRepository {
     List<Transaction> findByUser(User user);
 
+    List<Transaction> findBySubtype(Subtype subtype);
+
+    boolean existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+            User user, Category category, String name, Integer amount,
+            Type type, Subtype subtype, int year, int month);
+
     List<Transaction> findByUserAndCategory(User user, Category category);
 
     Optional<Transaction> findById(Long id);

@@ -1,5 +1,6 @@
 package com.money.manager.infrastructure.persistance.adapter;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -31,6 +32,21 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
     @Transactional(readOnly = true)
     public Optional<Payment> findByIdAndDebt_User_Id(Long id, Long userId) {
         return jpa.findByIdAndDebt_User_Id(id, userId).map(PaymentJpaMapper::toDomain);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Payment> findAutomaticPaymentsForOpenDebts() {
+        return jpa.findByAutomaticPaymentTrueAndDebt_EndDateIsNull().stream()
+                .map(PaymentJpaMapper::toDomain).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByDebtAmountAndMonth(com.money.manager.domain.Debt debt, Double amount, int year, int month) {
+        DebtJpa debtJpa = jpaDebt.findById(debt.getId())
+                .orElseThrow(() -> new IllegalStateException("debt not found"));
+        return jpa.existsByDebtAmountAndMonth(debtJpa, amount, year, month);
     }
 
     @Override

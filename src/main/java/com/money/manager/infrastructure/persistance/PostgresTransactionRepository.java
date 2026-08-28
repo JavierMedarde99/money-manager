@@ -12,12 +12,37 @@ import org.springframework.data.repository.query.Param;
 
 import com.money.manager.domain.enums.Subtype;
 import com.money.manager.domain.enums.Type;
+import com.money.manager.infrastructure.persistance.entity.CategoryJpa;
 import com.money.manager.infrastructure.persistance.entity.TransactionJpa;
 import com.money.manager.infrastructure.persistance.entity.UserJpa;
 
 public interface PostgresTransactionRepository extends JpaRepository<TransactionJpa, Long> {
 
     List<TransactionJpa> findByUser_Id(Long userId);
+
+    List<TransactionJpa> findBySubtype(Subtype subtype);
+
+    @Query("""
+        SELECT COUNT(t) > 0
+        FROM TransactionJpa t
+        WHERE t.user = :user
+          AND t.category = :category
+          AND t.name = :name
+          AND t.amount = :amount
+          AND t.type = :type
+          AND t.subtype = :subtype
+          AND EXTRACT(YEAR FROM t.dateTransaction) = :year
+          AND EXTRACT(MONTH FROM t.dateTransaction) = :month
+    """)
+    boolean existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+            @Param("user") UserJpa user,
+            @Param("category") CategoryJpa category,
+            @Param("name") String name,
+            @Param("amount") Integer amount,
+            @Param("type") Type type,
+            @Param("subtype") Subtype subtype,
+            @Param("year") int year,
+            @Param("month") int month);
 
     Optional<TransactionJpa> findByIdAndUser_Id(Long id, Long userId);
 

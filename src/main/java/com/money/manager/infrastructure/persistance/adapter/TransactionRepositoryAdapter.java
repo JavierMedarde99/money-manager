@@ -38,6 +38,26 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Transaction> findBySubtype(Subtype subtype) {
+        return jpa.findBySubtype(subtype).stream().map(TransactionJpaMapper::toDomain).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+            com.money.manager.domain.User user,
+            com.money.manager.domain.Category category,
+            String name, Integer amount, Type type, Subtype subtype, int year, int month) {
+        UserJpa userJpa = jpaUser.findById(user.getId())
+                .orElseThrow(() -> new IllegalStateException("user not found"));
+        CategoryJpa categoryJpa = jpaCategory.findById(category.getId())
+                .orElseThrow(() -> new IllegalStateException("category not found"));
+        return jpa.existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+                userJpa, categoryJpa, name, amount, type, subtype, year, month);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Transaction> findByUserAndCategory(com.money.manager.domain.User user,
             com.money.manager.domain.Category category) {
         return jpa.findByUser_IdAndCategory_Id(user.getId(), category.getId()).stream()
