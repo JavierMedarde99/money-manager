@@ -20,6 +20,8 @@ public interface PostgresTransactionRepository extends JpaRepository<Transaction
 
     List<TransactionJpa> findByUser_Id(Long userId);
 
+    void deleteByUser_Id(Long userId);
+
     List<TransactionJpa> findBySubtype(Subtype subtype);
 
     @Query("""

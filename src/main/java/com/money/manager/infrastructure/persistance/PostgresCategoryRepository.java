@@ -11,4 +11,6 @@ public interface PostgresCategoryRepository extends JpaRepository<CategoryJpa, L
     List<CategoryJpa> findByUser_Id(Long userId);
 
     Optional<CategoryJpa> findByIdAndUser_Id(Long id, Long userId);
+
+    void deleteByUser_Id(Long userId);
 }

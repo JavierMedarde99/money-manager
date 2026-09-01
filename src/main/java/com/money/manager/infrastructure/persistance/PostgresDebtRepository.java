@@ -11,4 +11,6 @@ public interface PostgresDebtRepository extends JpaRepository<DebtJpa, Long> {
     List<DebtJpa> findByUser_Id(Long userId);
 
     Optional<DebtJpa> findByIdAndUser_Id(Long id, Long userId);
+
+    void deleteByUser_Id(Long userId);
 }
