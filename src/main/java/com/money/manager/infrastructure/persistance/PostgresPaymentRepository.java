@@ -15,6 +15,8 @@ public interface PostgresPaymentRepository extends JpaRepository<PaymentJpa, Lon
 
     Optional<PaymentJpa> findByIdAndDebt_User_Id(Long id, Long userId);
 
+    void deleteByDebt_User_Id(Long userId);
+
     List<PaymentJpa> findByAutomaticPaymentTrueAndDebt_EndDateIsNull();
 
     @Query("""
