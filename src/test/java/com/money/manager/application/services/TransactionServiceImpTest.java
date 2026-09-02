@@ -3,13 +3,19 @@ package com.money.manager.application.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +54,9 @@ class TransactionServiceImpTest {
     @Mock
     private CategoryService categoryService;
 
+    @Mock
+    private Clock clock;
+
     @InjectMocks
     private TransactionServiceImp transactionService;
 
@@ -84,6 +93,9 @@ class TransactionServiceImpTest {
 
     @Test
     void createTransaction_mapsRequestSavesAndReturnsDto() throws NotFoundException {
+        when(clock.instant()).thenReturn(Instant.parse("2026-01-15T12:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+
         when(categoryService.findCategory(5L, user)).thenReturn(category);
         when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
 
@@ -252,5 +264,104 @@ class TransactionServiceImpTest {
                 .isInstanceOf(NotFoundException.class);
 
         verify(transactionRepository, never()).delete(any());
+    }
+
+    @Test
+    void createTransaction_fixedPastDate_createsBackfillUpToCurrentMonth() throws NotFoundException {
+        when(clock.instant()).thenReturn(Instant.parse("2026-09-15T12:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+
+        TransactionRequestDTO fixedDTO = new TransactionRequestDTO(
+                "Rent", "2026-06-15", 1, 800.0,
+                "expense", "fixed",
+                new com.money.manager.application.dtos.CategoryResponseDTO(5L, "Salary", "#00FF00"));
+        when(categoryService.findCategory(5L, user)).thenReturn(category);
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(inv -> {
+            Transaction t = inv.getArgument(0);
+            return Transaction.builder().id(100L).name(t.getName()).dateTransaction(t.getDateTransaction())
+                    .amount(t.getAmount()).price(t.getPrice()).type(t.getType()).subtype(t.getSubtype())
+                    .user(t.getUser()).category(t.getCategory()).build();
+        });
+        when(transactionRepository.existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+                any(), any(), any(), any(), any(), any(), anyInt(), anyInt())).thenReturn(false);
+
+        TransactionResponseDTO result = transactionService.createTransaction(fixedDTO, user);
+
+        assertThat(result.transactionDate()).isEqualTo("2026-06-15");
+
+        verify(transactionRepository, times(4)).save(any(Transaction.class));
+    }
+
+    @Test
+    void createTransaction_fixedCurrentMonth_savesOnlyOnce() throws NotFoundException {
+        when(clock.instant()).thenReturn(Instant.parse("2026-06-15T12:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+
+        TransactionRequestDTO fixedDTO = new TransactionRequestDTO(
+                "Rent", "2026-06-15", 1, 800.0,
+                "expense", "fixed",
+                new com.money.manager.application.dtos.CategoryResponseDTO(5L, "Salary", "#00FF00"));
+        when(categoryService.findCategory(5L, user)).thenReturn(category);
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(inv -> {
+            Transaction t = inv.getArgument(0);
+            return Transaction.builder().id(100L).name(t.getName()).dateTransaction(t.getDateTransaction())
+                    .amount(t.getAmount()).price(t.getPrice()).type(t.getType()).subtype(t.getSubtype())
+                    .user(t.getUser()).category(t.getCategory()).build();
+        });
+
+        transactionService.createTransaction(fixedDTO, user);
+
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verify(transactionRepository, never()).existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+                any(), any(), any(), any(), any(), any(), anyInt(), anyInt());
+    }
+
+    @Test
+    void createTransaction_variablePastDate_savesOnlyOnce() throws NotFoundException {
+        TransactionRequestDTO variableDTO = new TransactionRequestDTO(
+                "Groceries", "2026-06-15", 3, 45.5,
+                "expense", "variable",
+                new com.money.manager.application.dtos.CategoryResponseDTO(5L, "Salary", "#00FF00"));
+        when(categoryService.findCategory(5L, user)).thenReturn(category);
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(inv -> {
+            Transaction t = inv.getArgument(0);
+            return Transaction.builder().id(100L).name(t.getName()).dateTransaction(t.getDateTransaction())
+                    .amount(t.getAmount()).price(t.getPrice()).type(t.getType()).subtype(t.getSubtype())
+                    .user(t.getUser()).category(t.getCategory()).build();
+        });
+
+        transactionService.createTransaction(variableDTO, user);
+
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verify(transactionRepository, never()).existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+                any(), any(), any(), any(), any(), any(), anyInt(), anyInt());
+    }
+
+    @Test
+    void createTransaction_fixedPastDate_skipsExistingMonths() throws NotFoundException {
+        when(clock.instant()).thenReturn(Instant.parse("2026-09-15T12:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+
+        TransactionRequestDTO fixedDTO = new TransactionRequestDTO(
+                "Rent", "2026-06-15", 1, 800.0,
+                "expense", "fixed",
+                new com.money.manager.application.dtos.CategoryResponseDTO(5L, "Salary", "#00FF00"));
+        when(categoryService.findCategory(5L, user)).thenReturn(category);
+        when(transactionRepository.save(any(Transaction.class))).thenAnswer(inv -> {
+            Transaction t = inv.getArgument(0);
+            return Transaction.builder().id(200L).name(t.getName()).dateTransaction(t.getDateTransaction())
+                    .amount(t.getAmount()).price(t.getPrice()).type(t.getType()).subtype(t.getSubtype())
+                    .user(t.getUser()).category(t.getCategory()).build();
+        });
+        when(transactionRepository.existsByUserCategoryNameAmountTypeSubtypeAndMonth(
+                any(), any(), any(), any(), any(), any(), anyInt(), anyInt()))
+                .thenReturn(false)
+                .thenReturn(true)
+                .thenReturn(false)
+                .thenReturn(true);
+
+        transactionService.createTransaction(fixedDTO, user);
+
+        verify(transactionRepository, times(3)).save(any(Transaction.class));
     }
 }
