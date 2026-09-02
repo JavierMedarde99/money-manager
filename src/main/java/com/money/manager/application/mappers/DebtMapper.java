@@ -5,9 +5,11 @@ import java.time.format.DateTimeFormatter;
 
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.User;
+import com.money.manager.domain.paging.Page;
 import com.money.manager.application.dtos.DebtDTO;
 import com.money.manager.application.dtos.DebtRequestDTO;
 import com.money.manager.application.dtos.DebtResponseDTO;
+import com.money.manager.application.dtos.PaymentResponseDTO;
 
 public class DebtMapper {
     public static Debt fromDto(DebtRequestDTO debtRequestDTO, User user) {
@@ -30,11 +32,9 @@ public class DebtMapper {
                 .endDate(dateEnd).user(user).id(debtResponseDTO.id()).build();
     }
 
-    public static DebtResponseDTO toDto(Debt debt) {
-        boolean hasPayments = debt.getPayments() != null && !debt.getPayments().isEmpty();
+    public static DebtResponseDTO toDto(Debt debt, Page<PaymentResponseDTO> payments) {
         return new DebtResponseDTO(debt.getId(), debt.getName(), debt.getTotalAmount(), debt.getStartDate().toString(),
                 debt.getEndDate() == null ? null : debt.getEndDate().toString(),
-                hasPayments ? debt.getPayments().stream().map(payment -> PaymentMapper.toDto(payment)).toList()
-                        : null);
+                payments);
     }
 }

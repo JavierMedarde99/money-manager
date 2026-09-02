@@ -1,6 +1,6 @@
 package com.money.manager.application.dtos;
 
-import java.util.List;
+import com.money.manager.domain.paging.Page;
 
-public record DebtResponseDTO(Long id, String name, Double totalAmount, String startDate, String endDate,List<PaymentResponseDTO> payments) {
+public record DebtResponseDTO(Long id, String name, Double totalAmount, String startDate, String endDate, Page<PaymentResponseDTO> payments) {
 } 
