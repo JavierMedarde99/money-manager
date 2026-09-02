@@ -4,6 +4,8 @@ package com.money.manager.infrastructure.persistance;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,8 @@ public interface PostgresPaymentRepository extends JpaRepository<PaymentJpa, Lon
     Optional<PaymentJpa> findByIdAndDebt_User_Id(Long id, Long userId);
 
     void deleteByDebt_User_Id(Long userId);
+
+    Page<PaymentJpa> findByDebt_Id(Long debtId, Pageable pageable);
 
     List<PaymentJpa> findByAutomaticPaymentTrueAndDebt_EndDateIsNull();
 

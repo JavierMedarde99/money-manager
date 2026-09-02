@@ -3,6 +3,8 @@ package com.money.manager.infrastructure.persistance.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,12 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
     @Transactional(readOnly = true)
     public Optional<Payment> findByIdAndDebt_User_Id(Long id, Long userId) {
         return jpa.findByIdAndDebt_User_Id(id, userId).map(PaymentJpaMapper::toDomain);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Payment> findByDebt_Id(Long debtId, Pageable pageable) {
+        return jpa.findByDebt_Id(debtId, pageable).map(PaymentJpaMapper::toDomain);
     }
 
     @Override
