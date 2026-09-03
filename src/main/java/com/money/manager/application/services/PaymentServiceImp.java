@@ -10,12 +10,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.money.manager.application.mappers.PaymentMapper;
+import com.money.manager.domain.Category;
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.DebtRepository;
 import com.money.manager.domain.Payment;
 import com.money.manager.domain.PaymentRepository;
+import com.money.manager.domain.Transaction;
+import com.money.manager.domain.TransactionRepository;
 import com.money.manager.domain.User;
+import com.money.manager.domain.enums.Subtype;
+import com.money.manager.domain.enums.Type;
 import com.money.manager.domain.exception.NotFoundException;
+import com.money.manager.application.ports.CategoryService;
 import com.money.manager.application.ports.DebtService;
 import com.money.manager.application.ports.PaymentService;
 import com.money.manager.application.dtos.PaymentRequestDTO;
@@ -30,6 +36,8 @@ public class PaymentServiceImp implements PaymentService{
     private final PaymentRepository paymentRepository;
     private final DebtRepository debtRepository;
     private final DebtService debtService;
+    private final CategoryService categoryService;
+    private final TransactionRepository transactionRepository;
     private final Clock clock;
 
     @Override
@@ -43,15 +51,35 @@ public class PaymentServiceImp implements PaymentService{
             debtService.closeDebt(debt);
         }
         payment = paymentRepository.save(payment);
+        createExpenseTransaction(payment, user);
 
         if (Boolean.TRUE.equals(payment.getAutomaticPayment())) {
-            backfillAutomaticPayments(payment, debt);
+            backfillAutomaticPayments(payment, debt, user);
         }
 
         return PaymentMapper.toDto(payment);
     }
 
-    private void backfillAutomaticPayments(Payment original, Debt debt) {
+    @Override
+    @Transactional
+    public Transaction createExpenseTransaction(Payment payment, User user) {
+        Category category = categoryService.findOrCreatePaymentCategory(user);
+        long paymentNumber = paymentRepository.countByDebt_Id(payment.getDebt().getId());
+        Subtype subtype = Boolean.TRUE.equals(payment.getAutomaticPayment()) ? Subtype.FIXED : Subtype.VARIABLE;
+        Transaction transaction = Transaction.builder()
+                .name(payment.getDebt().getName() + ": pago " + paymentNumber)
+                .dateTransaction(payment.getPaymentDate())
+                .amount(1)
+                .price(payment.getAmount())
+                .type(Type.EXPENSE)
+                .subtype(subtype)
+                .user(user)
+                .category(category)
+                .build();
+        return transactionRepository.save(transaction);
+    }
+
+    private void backfillAutomaticPayments(Payment original, Debt debt, User user) {
         LocalDate today = LocalDate.now(clock);
         YearMonth originalMonth = YearMonth.from(original.getPaymentDate());
         YearMonth currentMonth = YearMonth.from(today);
@@ -74,6 +102,7 @@ public class PaymentServiceImp implements PaymentService{
                         .debt(debt)
                         .build());
                 closeDebtIfPaidOff(saved);
+                createExpenseTransaction(saved, user);
             }
             cursor = cursor.plusMonths(1);
         }

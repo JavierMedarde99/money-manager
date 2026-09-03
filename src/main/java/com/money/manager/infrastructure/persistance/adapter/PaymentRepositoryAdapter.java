@@ -44,6 +44,12 @@ public class PaymentRepositoryAdapter implements PaymentRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public long countByDebt_Id(Long debtId) {
+        return jpa.countByDebt_Id(debtId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<Payment> findAutomaticPaymentsForOpenDebts() {
         return jpa.findByAutomaticPaymentTrueAndDebt_EndDateIsNull().stream()
                 .map(PaymentJpaMapper::toDomain).toList();

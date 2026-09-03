@@ -13,6 +13,7 @@ public interface CategoryService {
     CategoryResponseDTO getCategory(Long categoryId, User user) throws NotFoundException;
     Category findCategory(Long categoryId, User user) throws NotFoundException;
     CategoryResponseDTO createCategory(CategoryRequestDTO categoryDto, User user);
+    Category findOrCreatePaymentCategory(User user);
     CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDto, Long categoryId, User user) throws NotFoundException;
     String deleteCategory(Long category, User user) throws NotFoundException;
 }

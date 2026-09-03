@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.money.manager.application.ports.DebtService;
+import com.money.manager.application.ports.PaymentService;
 import com.money.manager.domain.Category;
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.DebtRepository;
@@ -50,6 +51,9 @@ class RecurringServiceImpTest {
     @Mock
     private DebtService debtService;
 
+    @Mock
+    private PaymentService paymentService;
+
     @Captor
     private ArgumentCaptor<Transaction> transactionCaptor;
 
@@ -65,7 +69,7 @@ class RecurringServiceImpTest {
     void setUp() {
         Clock clock = Clock.fixed(Instant.parse("2026-02-01T00:05:00Z"), ZoneOffset.UTC);
         recurringService = new RecurringServiceImp(transactionRepository, paymentRepository, debtRepository,
-                debtService, clock);
+                debtService, paymentService, clock);
         user = User.builder().id(1L).username("javi").build();
         category = Category.builder().id(5L).name("Salary").color("#00FF00").user(user).build();
     }
@@ -196,5 +200,23 @@ class RecurringServiceImpTest {
 
         verify(paymentRepository, never()).save(any(Payment.class));
         verifyNoInteractions(debtRepository, debtService);
+    }
+
+    @Test
+    void processAutomaticPayments_createsExpenseTransactionForEachSavedPayment() {
+        Debt debt = Debt.builder().id(1L).name("Car loan").totalAmount(1000.0).user(user)
+                .payments(Set.of()).build();
+        Payment auto = Payment.builder().id(20L).paymentDate(LocalDate.of(2026, 1, 15))
+                .amount(100.0).automaticPayment(true).debt(debt).build();
+        when(paymentRepository.findAutomaticPaymentsForOpenDebts()).thenReturn(List.of(auto));
+        when(paymentRepository.existsByDebtAmountAndMonth(debt, 100.0, 2026, 2)).thenReturn(false);
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(debtRepository.findById(1L)).thenReturn(Optional.of(debt));
+
+        recurringService.processAutomaticPayments();
+
+        ArgumentCaptor<Payment> savedCaptor = ArgumentCaptor.forClass(Payment.class);
+        verify(paymentRepository).save(savedCaptor.capture());
+        verify(paymentService).createExpenseTransaction(savedCaptor.getValue(), user);
     }
 }

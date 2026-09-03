@@ -47,6 +47,20 @@ public class CategoryServiceImp implements CategoryService {
         return CategoryMapper.toDto(category);
     }
 
+    private static final String PAYMENT_CATEGORY_NAME = "pago";
+    private static final String PAYMENT_CATEGORY_COLOR = "#000000";
+
+    @Override
+    public Category findOrCreatePaymentCategory(User user) {
+        return categoryRepository.findByNameAndUser_Id(PAYMENT_CATEGORY_NAME, user.getId())
+                .orElseGet(() -> categoryRepository.save(
+                        Category.builder()
+                                .name(PAYMENT_CATEGORY_NAME)
+                                .color(PAYMENT_CATEGORY_COLOR)
+                                .user(user)
+                                .build()));
+    }
+
     @Transactional
     @Override
     public CategoryResponseDTO updateCategory(CategoryRequestDTO categoryDTO, Long categoryId, User user)
