@@ -13,6 +13,8 @@ public interface PaymentRepository {
 
     Page<Payment> findByDebt_Id(Long debtId, Pageable pageable);
 
+    long countByDebt_Id(Long debtId);
+
     List<Payment> findAutomaticPaymentsForOpenDebts();
 
     boolean existsByDebtAmountAndMonth(Debt debt, Double amount, int year, int month);

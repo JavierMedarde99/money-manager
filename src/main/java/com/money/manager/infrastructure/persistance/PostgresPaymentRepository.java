@@ -21,6 +21,8 @@ public interface PostgresPaymentRepository extends JpaRepository<PaymentJpa, Lon
 
     Page<PaymentJpa> findByDebt_Id(Long debtId, Pageable pageable);
 
+    long countByDebt_Id(Long debtId);
+
     List<PaymentJpa> findByAutomaticPaymentTrueAndDebt_EndDateIsNull();
 
     @Query("""

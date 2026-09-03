@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.money.manager.application.ports.DebtService;
+import com.money.manager.application.ports.PaymentService;
 import com.money.manager.application.ports.RecurringService;
 import com.money.manager.domain.Debt;
 import com.money.manager.domain.DebtRepository;
@@ -26,6 +27,7 @@ public class RecurringServiceImp implements RecurringService {
     private final PaymentRepository paymentRepository;
     private final DebtRepository debtRepository;
     private final DebtService debtService;
+    private final PaymentService paymentService;
     private final Clock clock;
 
     @Override
@@ -72,6 +74,7 @@ public class RecurringServiceImp implements RecurringService {
                     .debt(payment.getDebt())
                     .build());
             closeDebtIfPaidOff(saved);
+            paymentService.createExpenseTransaction(saved, payment.getDebt().getUser());
         }
     }
 
