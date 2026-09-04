@@ -73,8 +73,10 @@ public class RecurringServiceImp implements RecurringService {
                     .automaticPayment(true)
                     .debt(payment.getDebt())
                     .build());
+            Debt fullDebt = debtRepository.findById(payment.getDebt().getId())
+                    .orElseThrow(() -> new IllegalStateException("debt not found"));
             closeDebtIfPaidOff(saved);
-            paymentService.createExpenseTransaction(saved, payment.getDebt().getUser());
+            paymentService.createExpenseTransaction(saved, fullDebt, fullDebt.getUser());
         }
     }
 

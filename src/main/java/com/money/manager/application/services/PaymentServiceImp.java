@@ -51,7 +51,7 @@ public class PaymentServiceImp implements PaymentService{
             debtService.closeDebt(debt);
         }
         payment = paymentRepository.save(payment);
-        createExpenseTransaction(payment, user);
+        createExpenseTransaction(payment, debt, user);
 
         if (Boolean.TRUE.equals(payment.getAutomaticPayment())) {
             backfillAutomaticPayments(payment, debt, user);
@@ -62,12 +62,12 @@ public class PaymentServiceImp implements PaymentService{
 
     @Override
     @Transactional
-    public Transaction createExpenseTransaction(Payment payment, User user) {
+    public Transaction createExpenseTransaction(Payment payment, Debt debt, User user) {
         Category category = categoryService.findOrCreatePaymentCategory(user);
-        long paymentNumber = paymentRepository.countByDebt_Id(payment.getDebt().getId());
+        long paymentNumber = paymentRepository.countByDebt_Id(debt.getId());
         Subtype subtype = Boolean.TRUE.equals(payment.getAutomaticPayment()) ? Subtype.FIXED : Subtype.VARIABLE;
         Transaction transaction = Transaction.builder()
-                .name(payment.getDebt().getName() + ": pago " + paymentNumber)
+                .name(debt.getName() + ": pago " + paymentNumber)
                 .dateTransaction(payment.getPaymentDate())
                 .amount(1)
                 .price(payment.getAmount())
@@ -102,7 +102,7 @@ public class PaymentServiceImp implements PaymentService{
                         .debt(debt)
                         .build());
                 closeDebtIfPaidOff(saved);
-                createExpenseTransaction(saved, user);
+                createExpenseTransaction(saved, debt, user);
             }
             cursor = cursor.plusMonths(1);
         }
