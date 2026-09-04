@@ -217,6 +217,6 @@ class RecurringServiceImpTest {
 
         ArgumentCaptor<Payment> savedCaptor = ArgumentCaptor.forClass(Payment.class);
         verify(paymentRepository).save(savedCaptor.capture());
-        verify(paymentService).createExpenseTransaction(savedCaptor.getValue(), user);
+        verify(paymentService).createExpenseTransaction(savedCaptor.getValue(), debt, user);
     }
 }

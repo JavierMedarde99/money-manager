@@ -232,7 +232,7 @@ class PaymentServiceImpTest {
         when(transactionRepository.save(any(Transaction.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Transaction saved = paymentService.createExpenseTransaction(payment, user);
+        Transaction saved = paymentService.createExpenseTransaction(payment, debt, user);
 
         assertThat(saved.getName()).isEqualTo("Car: pago 2");
         assertThat(saved.getType()).isEqualTo(Type.EXPENSE);
@@ -259,10 +259,35 @@ class PaymentServiceImpTest {
         when(transactionRepository.save(any(Transaction.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Transaction saved = paymentService.createExpenseTransaction(payment, user);
+        Transaction saved = paymentService.createExpenseTransaction(payment, debt, user);
 
         assertThat(saved.getSubtype()).isEqualTo(Subtype.FIXED);
         assertThat(saved.getType()).isEqualTo(Type.EXPENSE);
+    }
+
+    @Test
+    void insertPayment_usesFullDebtNameEvenWhenSavedPaymentCarriesPartialDebt() throws NotFoundException {
+        PaymentRequestDTO dto = new PaymentRequestDTO(
+                "2026-01-15", 500.0, false, new DebtDTO(10L, "Car", 3000.0, null, null));
+        when(debtRepository.findByIdAndUser_Id(10L, 1L)).thenReturn(Optional.of(debt));
+        Payment partialDebtPayment = Payment.builder().id(50L)
+                .paymentDate(LocalDate.of(2026, 1, 15))
+                .amount(500.0)
+                .automaticPayment(false)
+                .debt(Debt.builder().id(10L).build())
+                .build();
+        when(paymentRepository.save(any(Payment.class))).thenReturn(partialDebtPayment);
+        when(paymentRepository.countByDebt_Id(10L)).thenReturn(1L);
+        when(categoryService.findOrCreatePaymentCategory(user))
+                .thenReturn(Category.builder().id(5L).name("pago").color("#000000").user(user).build());
+        when(transactionRepository.save(any(Transaction.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        paymentService.insertPayment(dto, user);
+
+        ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
+        verify(transactionRepository).save(captor.capture());
+        assertThat(captor.getValue().getName()).isEqualTo("Car: pago 1");
     }
 
     @Test
