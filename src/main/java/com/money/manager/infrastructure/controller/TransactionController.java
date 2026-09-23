@@ -53,6 +53,8 @@ public class TransactionController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "DESC") String direction,
             Authentication authentication) {
         TransactionFilter filter = new TransactionFilter(
                 type != null ? Type.getTypeByName(type) : null,
@@ -63,8 +65,8 @@ public class TransactionController {
         Pageable pageable = Pageable.of(
                 page,
                 size,
-                "id",
-                SortDirection.DESC);
+                sortBy,
+                SortDirection.getByName(direction));
 
         return ResponseEntity.ok(
                 transactionService.getAllTransaction(

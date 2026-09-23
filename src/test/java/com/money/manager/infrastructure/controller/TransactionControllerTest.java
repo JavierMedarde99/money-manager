@@ -196,6 +196,23 @@ class TransactionControllerTest {
     }
 
     @Test
+    void getAllTransactions_forwardsSortParamsToPageable() throws Exception {
+        when(transactionService.getAllTransaction(eq(principal), any(TransactionFilter.class), any(Pageable.class)))
+                .thenReturn(Page.of(List.of(), 0, 10, 0, 0));
+
+        mockMvc.perform(get("/transaction/all").with(authentication(auth()))
+                        .param("sortBy", "name")
+                        .param("direction", "asc"))
+                .andExpect(status().isOk());
+
+        var pageableCaptor = org.mockito.ArgumentCaptor.forClass(Pageable.class);
+        verify(transactionService).getAllTransaction(eq(principal), any(TransactionFilter.class), pageableCaptor.capture());
+        org.assertj.core.api.Assertions.assertThat(pageableCaptor.getValue().sortBy()).isEqualTo("name");
+        org.assertj.core.api.Assertions.assertThat(pageableCaptor.getValue().direction())
+                .isEqualTo(com.money.manager.domain.paging.SortDirection.ASC);
+    }
+
+    @Test
     void getTransaction_withExistingId_returnsTransaction() throws Exception {
         when(transactionService.getTransaction(10L, principal)).thenReturn(responseDTO());
 

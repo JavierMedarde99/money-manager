@@ -175,6 +175,48 @@ class TransactionServiceImpTest {
     }
 
     @Test
+    void getAllTransaction_sortByTransactionDate_mapsToDateTransaction() {
+        com.money.manager.domain.paging.Pageable pageable = com.money.manager.domain.paging.Pageable.of(0, 10, "transactionDate", SortDirection.ASC);
+        when(transactionRepository.findByFilters(eq(user), isNull(), isNull(), isNull(), isNull(), any()))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(List.of(), PageRequest.of(0, 10), 0));
+
+        transactionService.getAllTransaction(user, new TransactionFilter(null, null, null, null), pageable);
+
+        verify(transactionRepository).findByFilters(eq(user), isNull(), isNull(), isNull(), isNull(),
+                springPageableCaptor.capture());
+        org.springframework.data.domain.Pageable used = springPageableCaptor.getValue();
+        assertThat(used.getSort().getOrderFor("dateTransaction").getDirection()).isEqualTo(Sort.Direction.ASC);
+    }
+
+    @Test
+    void getAllTransaction_sortByCategory_usesCategoryNameProperty() {
+        com.money.manager.domain.paging.Pageable pageable = com.money.manager.domain.paging.Pageable.of(0, 10, "category", SortDirection.DESC);
+        when(transactionRepository.findByFilters(eq(user), isNull(), isNull(), isNull(), isNull(), any()))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(List.of(), PageRequest.of(0, 10), 0));
+
+        transactionService.getAllTransaction(user, new TransactionFilter(null, null, null, null), pageable);
+
+        verify(transactionRepository).findByFilters(eq(user), isNull(), isNull(), isNull(), isNull(),
+                springPageableCaptor.capture());
+        org.springframework.data.domain.Pageable used = springPageableCaptor.getValue();
+        assertThat(used.getSort().getOrderFor("category.name").getDirection()).isEqualTo(Sort.Direction.DESC);
+    }
+
+    @Test
+    void getAllTransaction_unknownSortBy_fallsBackToId() {
+        com.money.manager.domain.paging.Pageable pageable = com.money.manager.domain.paging.Pageable.of(0, 10, "DROP TABLE transactions", SortDirection.ASC);
+        when(transactionRepository.findByFilters(eq(user), isNull(), isNull(), isNull(), isNull(), any()))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(List.of(), PageRequest.of(0, 10), 0));
+
+        transactionService.getAllTransaction(user, new TransactionFilter(null, null, null, null), pageable);
+
+        verify(transactionRepository).findByFilters(eq(user), isNull(), isNull(), isNull(), isNull(),
+                springPageableCaptor.capture());
+        org.springframework.data.domain.Pageable used = springPageableCaptor.getValue();
+        assertThat(used.getSort().getOrderFor("id").getDirection()).isEqualTo(Sort.Direction.ASC);
+    }
+
+    @Test
     void getAllTransaction_forwardsAllFilterValues() {
         LocalDate from = LocalDate.of(2026, 1, 1);
         LocalDate to = LocalDate.of(2026, 1, 31);
