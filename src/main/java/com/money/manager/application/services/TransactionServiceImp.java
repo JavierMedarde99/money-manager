@@ -91,8 +91,8 @@ public class TransactionServiceImp implements TransactionService {
             com.money.manager.domain.paging.Pageable pageable) {
 
         Sort sort = pageable.direction() == SortDirection.DESC
-                ? Sort.by(pageable.sortBy()).descending()
-                : Sort.by(pageable.sortBy()).ascending();
+                ? Sort.by(sortProperty(pageable.sortBy())).descending()
+                : Sort.by(sortProperty(pageable.sortBy())).ascending();
 
         org.springframework.data.domain.Pageable springPageable = org.springframework.data.domain.PageRequest.of(
                 pageable.page(), pageable.size(), sort);
@@ -148,5 +148,18 @@ public class TransactionServiceImp implements TransactionService {
     static LocalDate sameDayForMonth(LocalDate original, YearMonth target) {
         int day = Math.min(original.getDayOfMonth(), target.lengthOfMonth());
         return LocalDate.of(target.getYear(), target.getMonth(), day);
+    }
+
+    private static String sortProperty(String sortBy) {
+        return switch (sortBy) {
+            case "name" -> "name";
+            case "transactionDate" -> "dateTransaction";
+            case "transactionType" -> "type";
+            case "transactionSubtype" -> "subtype";
+            case "category" -> "category.name";
+            case "amount" -> "amount";
+            case "price" -> "price";
+            default -> "id";
+        };
     }
 }
