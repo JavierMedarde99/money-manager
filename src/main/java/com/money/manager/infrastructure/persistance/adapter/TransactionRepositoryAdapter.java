@@ -95,10 +95,10 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
     @Override
     @Transactional(readOnly = true)
     public Page<Transaction> findByFilters(com.money.manager.domain.User user, Type type, Subtype subtype,
-            LocalDate from, LocalDate to, Pageable pageable) {
+            LocalDate from, LocalDate to, Long categoryId, Pageable pageable) {
         UserJpa userJpa = jpaUser.findById(user.getId())
                 .orElseThrow(() -> new IllegalStateException("user not found"));
-        return jpa.findByFilters(userJpa, type, subtype, from, to, pageable)
+        return jpa.findByFilters(userJpa, type, subtype, from, to, categoryId, pageable)
                 .map(TransactionJpaMapper::toDomain);
     }
 }

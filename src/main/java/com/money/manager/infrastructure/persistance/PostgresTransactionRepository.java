@@ -58,6 +58,7 @@ public interface PostgresTransactionRepository extends JpaRepository<Transaction
           AND (:subtype IS NULL OR t.subtype = :subtype)
           AND (CAST(:from AS date) IS NULL OR t.dateTransaction >= :from)
           AND (CAST(:to AS date) IS NULL OR t.dateTransaction <= :to)
+          AND (:categoryId IS NULL OR t.category.id = :categoryId)
     """)
     Page<TransactionJpa> findByFilters(
             @Param("user") UserJpa user,
@@ -65,5 +66,6 @@ public interface PostgresTransactionRepository extends JpaRepository<Transaction
             @Param("subtype") Subtype subtype,
             @Param("from") LocalDate from,
             @Param("to") LocalDate to,
+            @Param("categoryId") Long categoryId,
             Pageable pageable);
 }

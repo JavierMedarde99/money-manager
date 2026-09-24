@@ -196,6 +196,20 @@ class TransactionControllerTest {
     }
 
     @Test
+    void getAllTransactions_forwardsCategoryFilterToService() throws Exception {
+        when(transactionService.getAllTransaction(eq(principal), any(TransactionFilter.class), any(Pageable.class)))
+                .thenReturn(Page.of(List.of(), 0, 10, 0, 0));
+
+        mockMvc.perform(get("/transaction/all").with(authentication(auth()))
+                        .param("category", "7"))
+                .andExpect(status().isOk());
+
+        var filterCaptor = org.mockito.ArgumentCaptor.forClass(TransactionFilter.class);
+        verify(transactionService).getAllTransaction(eq(principal), filterCaptor.capture(), any(Pageable.class));
+        org.assertj.core.api.Assertions.assertThat(filterCaptor.getValue().categoryId()).isEqualTo(7L);
+    }
+
+    @Test
     void getAllTransactions_forwardsSortParamsToPageable() throws Exception {
         when(transactionService.getAllTransaction(eq(principal), any(TransactionFilter.class), any(Pageable.class)))
                 .thenReturn(Page.of(List.of(), 0, 10, 0, 0));
