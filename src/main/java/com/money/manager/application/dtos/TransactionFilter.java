@@ -8,6 +8,7 @@ import com.money.manager.domain.enums.Type;
 public record TransactionFilter(Type type,
         Subtype subtype,
         LocalDate from,
-        LocalDate to) {
+        LocalDate to,
+        Long categoryId) {
 
 }

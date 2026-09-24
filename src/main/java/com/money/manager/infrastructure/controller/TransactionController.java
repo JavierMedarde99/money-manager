@@ -51,6 +51,7 @@ public class TransactionController {
             @RequestParam(required = false) String subType,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(required = false) Long category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
@@ -60,7 +61,8 @@ public class TransactionController {
                 type != null ? Type.getTypeByName(type) : null,
                 subType != null ? Subtype.getSubTypeByName(subType) : null,
                 from,
-                to);
+                to,
+                category);
 
         Pageable pageable = Pageable.of(
                 page,

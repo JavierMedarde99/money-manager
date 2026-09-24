@@ -35,5 +35,6 @@ public interface TransactionRepository {
             Subtype subtype,
             LocalDate from,
             LocalDate to,
+            Long categoryId,
             Pageable pageable);
 }

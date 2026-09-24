@@ -103,6 +103,7 @@ public class TransactionServiceImp implements TransactionService {
                 filter.subtype(),
                 filter.from(),
                 filter.to(),
+                filter.categoryId(),
                 springPageable);
 
         List<TransactionResponseDTO> content = transactions.getContent().stream().map(TransactionMapper::toDto).toList();
