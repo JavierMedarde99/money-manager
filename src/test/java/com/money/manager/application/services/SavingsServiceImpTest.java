@@ -1,5 +1,6 @@
 package com.money.manager.application.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -71,13 +72,13 @@ class SavingsServiceImpTest {
 
         verify(savingsRepository).save(savingsCaptor.capture());
         Savings saved = savingsCaptor.getValue();
-        assert saved.getTotalIncome() == 2500.0;
-        assert saved.getTotalExpense() == 2000.0;
-        assert saved.getSavings() == 500.0;
-        assert saved.getUser() == user;
-        assert saved.getYear() == 2026;
-        assert saved.getMonth() == 9;
-        assert saved.getId() == null;
+        assertThat(saved.getTotalIncome()).isEqualTo(2500.0);
+        assertThat(saved.getTotalExpense()).isEqualTo(2000.0);
+        assertThat(saved.getSavings()).isEqualTo(500.0);
+        assertThat(saved.getUser()).isSameAs(user);
+        assertThat(saved.getYear()).isEqualTo(2026);
+        assertThat(saved.getMonth()).isEqualTo(9);
+        assertThat(saved.getId()).isNull();
     }
 
     @Test
@@ -118,10 +119,10 @@ class SavingsServiceImpTest {
 
         verify(savingsRepository).save(savingsCaptor.capture());
         Savings saved = savingsCaptor.getValue();
-        assert saved.getId() == 10L;
-        assert saved.getTotalIncome() == 2500.0;
-        assert saved.getTotalExpense() == 1800.0;
-        assert saved.getSavings() == 700.0;
+        assertThat(saved.getId()).isEqualTo(10L);
+        assertThat(saved.getTotalIncome()).isEqualTo(2500.0);
+        assertThat(saved.getTotalExpense()).isEqualTo(1800.0);
+        assertThat(saved.getSavings()).isEqualTo(700.0);
     }
 
     @Test
@@ -166,8 +167,9 @@ class SavingsServiceImpTest {
         // Both saves carry the same logical row: first insert (no id), then update of id=10.
         Savings first = savingsCaptor.getAllValues().get(0);
         Savings second = savingsCaptor.getAllValues().get(1);
-        assert first.getId() == null;
-        assert second.getId() == 10L;
-        assert first.getYear() == second.getYear() && first.getMonth() == second.getMonth();
+        assertThat(first.getId()).isNull();
+        assertThat(second.getId()).isEqualTo(10L);
+        assertThat(first.getYear()).isEqualTo(second.getYear());
+        assertThat(first.getMonth()).isEqualTo(second.getMonth());
     }
 }
