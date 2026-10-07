@@ -15,6 +15,7 @@ import com.money.manager.domain.User;
 import com.money.manager.infrastructure.persistance.PostgresCategoryRepository;
 import com.money.manager.infrastructure.persistance.PostgresDebtRepository;
 import com.money.manager.infrastructure.persistance.PostgresPaymentRepository;
+import com.money.manager.infrastructure.persistance.PostgresSavingsRepository;
 import com.money.manager.infrastructure.persistance.PostgresTransactionRepository;
 import com.money.manager.infrastructure.persistance.PostgresUserRepository;
 
@@ -36,13 +37,16 @@ class UserRepositoryAdapterTest {
     @Mock
     private PostgresPaymentRepository jpaPayment;
 
+    @Mock
+    private PostgresSavingsRepository jpaSavings;
+
     private UserRepositoryAdapter adapter;
 
     private User user;
 
     @BeforeEach
     void setUp() {
-        adapter = new UserRepositoryAdapter(jpa, jpaCategory, jpaTransaction, jpaDebt, jpaPayment);
+        adapter = new UserRepositoryAdapter(jpa, jpaCategory, jpaTransaction, jpaDebt, jpaPayment, jpaSavings);
         user = User.builder().id(7L).username("javi").build();
     }
 
@@ -50,9 +54,10 @@ class UserRepositoryAdapterTest {
     void delete_deletesChildrenBeforeUserInCascadeOrder() {
         adapter.delete(user);
 
-        InOrder inOrder = inOrder(jpaPayment, jpaDebt, jpaTransaction, jpaCategory, jpa);
+        InOrder inOrder = inOrder(jpaPayment, jpaDebt, jpaSavings, jpaTransaction, jpaCategory, jpa);
         inOrder.verify(jpaPayment).deleteByDebt_User_Id(7L);
         inOrder.verify(jpaDebt).deleteByUser_Id(7L);
+        inOrder.verify(jpaSavings).deleteByUser_Id(7L);
         inOrder.verify(jpaTransaction).deleteByUser_Id(7L);
         inOrder.verify(jpaCategory).deleteByUser_Id(7L);
         inOrder.verify(jpa).deleteById(7L);
@@ -64,9 +69,10 @@ class UserRepositoryAdapterTest {
 
         verify(jpaPayment).deleteByDebt_User_Id(7L);
         verify(jpaDebt).deleteByUser_Id(7L);
+        verify(jpaSavings).deleteByUser_Id(7L);
         verify(jpaTransaction).deleteByUser_Id(7L);
         verify(jpaCategory).deleteByUser_Id(7L);
         verify(jpa).deleteById(7L);
-        verifyNoMoreInteractions(jpaPayment, jpaDebt, jpaTransaction, jpaCategory, jpa);
+        verifyNoMoreInteractions(jpaPayment, jpaDebt, jpaSavings, jpaTransaction, jpaCategory, jpa);
     }
 }

@@ -44,6 +44,23 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Transaction> findByUserAndMonth(com.money.manager.domain.User user, int year, int month) {
+        UserJpa userJpa = jpaUser.findById(user.getId())
+                .orElseThrow(() -> new IllegalStateException("user not found"));
+        return jpa.findByUser_IdAndYearAndMonth(userJpa, year, month).stream()
+                .map(TransactionJpaMapper::toDomain).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<com.money.manager.domain.User> findUsersWithTransactions() {
+        return jpa.findDistinctUsers().stream()
+                .map(com.money.manager.infrastructure.persistance.mapper.UserJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean existsByUserCategoryNameAmountTypeSubtypeAndMonth(
             com.money.manager.domain.User user,
             com.money.manager.domain.Category category,

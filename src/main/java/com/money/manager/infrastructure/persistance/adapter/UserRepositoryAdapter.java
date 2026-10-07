@@ -10,6 +10,7 @@ import com.money.manager.domain.UserRepository;
 import com.money.manager.infrastructure.persistance.PostgresCategoryRepository;
 import com.money.manager.infrastructure.persistance.PostgresDebtRepository;
 import com.money.manager.infrastructure.persistance.PostgresPaymentRepository;
+import com.money.manager.infrastructure.persistance.PostgresSavingsRepository;
 import com.money.manager.infrastructure.persistance.PostgresTransactionRepository;
 import com.money.manager.infrastructure.persistance.PostgresUserRepository;
 import com.money.manager.infrastructure.persistance.mapper.UserJpaMapper;
@@ -25,6 +26,7 @@ public class UserRepositoryAdapter implements UserRepository {
     private final PostgresTransactionRepository jpaTransaction;
     private final PostgresDebtRepository jpaDebt;
     private final PostgresPaymentRepository jpaPayment;
+    private final PostgresSavingsRepository jpaSavings;
 
     @Override
     public Optional<User> findByUsername(String username) {
@@ -46,6 +48,7 @@ public class UserRepositoryAdapter implements UserRepository {
     public void delete(User user) {
         jpaPayment.deleteByDebt_User_Id(user.getId());
         jpaDebt.deleteByUser_Id(user.getId());
+        jpaSavings.deleteByUser_Id(user.getId());
         jpaTransaction.deleteByUser_Id(user.getId());
         jpaCategory.deleteByUser_Id(user.getId());
         jpa.deleteById(user.getId());

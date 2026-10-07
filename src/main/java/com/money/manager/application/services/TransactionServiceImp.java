@@ -22,6 +22,7 @@ import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.paging.Page;
 import com.money.manager.domain.paging.SortDirection;
 import com.money.manager.application.ports.CategoryService;
+import com.money.manager.application.ports.SavingsService;
 import com.money.manager.application.ports.TransactionService;
 import com.money.manager.application.dtos.TransactionFilter;
 import com.money.manager.application.dtos.TransactionRequestDTO;
@@ -36,6 +37,7 @@ public class TransactionServiceImp implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final CategoryService categoryService;
     private final Clock clock;
+    private final SavingsService savingsService;
 
     @Override
     @Transactional
@@ -45,9 +47,11 @@ public class TransactionServiceImp implements TransactionService {
         Transaction transaction = TransactionMapper.fromDto(transactionRequestDTO, user, category);
         transaction = transactionRepository.save(transaction);
 
+        YearMonth insertedMonth = YearMonth.from(transaction.getDateTransaction());
         if (transaction.getSubtype() == Subtype.FIXED) {
             backfillFixedTransactions(transaction, user, category);
         }
+        savingsService.recalculate(user, insertedMonth.getYear(), insertedMonth.getMonthValue());
 
         return TransactionMapper.toDto(transaction);
     }
@@ -80,6 +84,7 @@ public class TransactionServiceImp implements TransactionService {
                         .category(category)
                         .build());
             }
+            savingsService.recalculate(user, cursor.getYear(), cursor.getMonthValue());
             cursor = cursor.plusMonths(1);
         }
     }
@@ -122,6 +127,7 @@ public class TransactionServiceImp implements TransactionService {
     public TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO, Long transactionId,User user) throws NotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         Transaction transaction = findById(transactionId, user);
+        YearMonth oldMonth = YearMonth.from(transaction.getDateTransaction());
         transaction.setName(transactionRequestDTO.name());
         transaction.setDateTransaction( LocalDate.parse(transactionRequestDTO.transactionDate(), formatter));
         transaction.setPrice(transactionRequestDTO.price());
@@ -131,13 +137,20 @@ public class TransactionServiceImp implements TransactionService {
         transaction.setCategory(categoryService.findCategory(transactionRequestDTO.category().id(),
                 user));
         transactionRepository.save(transaction);
+        YearMonth newMonth = YearMonth.from(transaction.getDateTransaction());
+        savingsService.recalculate(user, oldMonth.getYear(), oldMonth.getMonthValue());
+        if (!newMonth.equals(oldMonth)) {
+            savingsService.recalculate(user, newMonth.getYear(), newMonth.getMonthValue());
+        }
         return TransactionMapper.toDto(transaction);
     }
 
     @Override
     public String deleteTransaction(Long transactionId, User user) throws NotFoundException{
         Transaction transaction = findById(transactionId, user);
+        YearMonth deletedMonth = YearMonth.from(transaction.getDateTransaction());
         transactionRepository.delete(transaction);
+        savingsService.recalculate(user, deletedMonth.getYear(), deletedMonth.getMonthValue());
         return "transaction delete"; 
     }
 
