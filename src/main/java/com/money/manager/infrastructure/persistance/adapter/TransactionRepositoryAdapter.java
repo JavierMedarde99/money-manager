@@ -44,6 +44,13 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<Transaction> findByUserAndMonth(com.money.manager.domain.User user, int year, int month) {
+        // Implemented in Task 2 (persistence task); stub keeps Task 1 compiling.
+        throw new UnsupportedOperationException("not implemented");
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean existsByUserCategoryNameAmountTypeSubtypeAndMonth(
             com.money.manager.domain.User user,
             com.money.manager.domain.Category category,

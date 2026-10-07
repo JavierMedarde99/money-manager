@@ -15,6 +15,8 @@ public interface TransactionRepository {
 
     List<Transaction> findBySubtype(Subtype subtype);
 
+    List<Transaction> findByUserAndMonth(User user, int year, int month);
+
     boolean existsByUserCategoryNameAmountTypeSubtypeAndMonth(
             User user, Category category, String name, Integer amount,
             Type type, Subtype subtype, int year, int month);
