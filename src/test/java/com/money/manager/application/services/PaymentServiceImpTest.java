@@ -60,6 +60,9 @@ class PaymentServiceImpTest {
     @Mock
     private Clock clock;
 
+    @Mock
+    private com.money.manager.application.ports.SavingsService savingsService;
+
     private PaymentServiceImp paymentService;
 
     private User user;
@@ -69,7 +72,7 @@ class PaymentServiceImpTest {
     @BeforeEach
     void setUp() {
         paymentService = new PaymentServiceImp(paymentRepository, debtRepository, debtService,
-                categoryService, transactionRepository, clock);
+                categoryService, transactionRepository, clock, savingsService);
         user = User.builder().id(1L).username("javi").build();
         debt = Debt.builder().id(10L).name("Car").totalAmount(3000.0).user(user)
                 .payments(new java.util.HashSet<>()).build();
@@ -288,6 +291,57 @@ class PaymentServiceImpTest {
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
         verify(transactionRepository).save(captor.capture());
         assertThat(captor.getValue().getName()).isEqualTo("Car: pago 1");
+    }
+
+    @Test
+    void insertPayment_nonAutomatic_recalculatesPaymentMonth() throws NotFoundException {
+        PaymentRequestDTO dto = new PaymentRequestDTO(
+                "2026-01-15", 500.0, false, new DebtDTO(10L, "Car", 3000.0, null, null));
+        when(debtRepository.findByIdAndUser_Id(10L, 1L)).thenReturn(Optional.of(debt));
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(inv -> {
+            Payment p = inv.getArgument(0);
+            return Payment.builder().id(200L).paymentDate(p.getPaymentDate()).amount(p.getAmount())
+                    .automaticPayment(p.getAutomaticPayment()).debt(p.getDebt()).build();
+        });
+        when(paymentRepository.countByDebt_Id(10L)).thenReturn(1L);
+        when(categoryService.findOrCreatePaymentCategory(user))
+                .thenReturn(Category.builder().id(5L).name("pago").color("#000000").user(user).build());
+        when(transactionRepository.save(any(Transaction.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        paymentService.insertPayment(dto, user);
+
+        verify(savingsService).recalculate(user, 2026, 1);
+    }
+
+    @Test
+    void insertPayment_fixedBackfill_recalculatesEachBackfilledMonth() throws NotFoundException {
+        when(clock.instant()).thenReturn(Instant.parse("2026-04-15T12:00:00Z"));
+        when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
+
+        PaymentRequestDTO dto = new PaymentRequestDTO(
+                "2026-01-15", 500.0, true, new DebtDTO(10L, "Car", 3000.0, null, null));
+        when(debtRepository.findByIdAndUser_Id(10L, 1L)).thenReturn(Optional.of(debt));
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(inv -> {
+            Payment p = inv.getArgument(0);
+            return Payment.builder().id(100L).paymentDate(p.getPaymentDate()).amount(p.getAmount())
+                    .automaticPayment(p.getAutomaticPayment()).debt(p.getDebt()).build();
+        });
+        when(debtRepository.findById(10L)).thenReturn(Optional.of(debt));
+        when(paymentRepository.existsByDebtAmountAndMonth(any(), any(), anyInt(), anyInt())).thenReturn(false);
+        when(paymentRepository.countByDebt_Id(10L)).thenReturn(1L);
+        when(categoryService.findOrCreatePaymentCategory(user))
+                .thenReturn(Category.builder().id(5L).name("pago").color("#000000").user(user).build());
+        when(transactionRepository.save(any(Transaction.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        paymentService.insertPayment(dto, user);
+
+        verify(savingsService).recalculate(user, 2026, 1);
+        verify(savingsService).recalculate(user, 2026, 2);
+        verify(savingsService).recalculate(user, 2026, 3);
+        verify(savingsService).recalculate(user, 2026, 4);
+        verify(savingsService, times(4)).recalculate(any(com.money.manager.domain.User.class), anyInt(), anyInt());
     }
 
     @Test
