@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.money.manager.application.dtos.SavingsResponseDTO;
+import com.money.manager.application.mappers.SavingsMapper;
 import com.money.manager.application.ports.SavingsService;
 import com.money.manager.domain.Savings;
 import com.money.manager.domain.SavingsRepository;
@@ -54,5 +56,12 @@ public class SavingsServiceImp implements SavingsService {
     public void recalculateAll() {
         // Implemented in Task 7 (scheduler retrospective pass).
         throw new UnsupportedOperationException("not implemented");
+    }
+
+    @Override
+    public List<SavingsResponseDTO> getSavings(User user) {
+        return savingsRepository.findByUser(user).stream()
+                .map(SavingsMapper::toDto)
+                .toList();
     }
 }
