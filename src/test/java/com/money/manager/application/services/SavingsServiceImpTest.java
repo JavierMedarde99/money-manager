@@ -1,7 +1,10 @@
 package com.money.manager.application.services;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -119,6 +122,31 @@ class SavingsServiceImpTest {
         assert saved.getTotalIncome() == 2500.0;
         assert saved.getTotalExpense() == 1800.0;
         assert saved.getSavings() == 700.0;
+    }
+
+    @Test
+    void recalculateAll_coversEveryMonthFromEarliestToCurrent() {
+        when(transactionRepository.findUsersWithTransactions()).thenReturn(List.of(user));
+        Transaction earliest = Transaction.builder().id(1L).type(Type.EXPENSE).price(50.0)
+                .dateTransaction(LocalDate.of(2026, 8, 20)).user(user).build();
+        when(transactionRepository.findByUser(user)).thenReturn(List.of(earliest));
+
+        service.recalculateAll();
+
+        verify(transactionRepository).findByUserAndMonth(user, 2026, 8);
+        verify(transactionRepository).findByUserAndMonth(user, 2026, 9);
+        verify(transactionRepository).findByUserAndMonth(user, 2026, 10);
+        verify(transactionRepository, times(3)).findByUserAndMonth(eq(user), anyInt(), anyInt());
+    }
+
+    @Test
+    void recalculateAll_skipsUsersWithoutTransactions() {
+        when(transactionRepository.findUsersWithTransactions()).thenReturn(List.of());
+
+        service.recalculateAll();
+
+        verify(transactionRepository, never()).findByUser(any());
+        verify(transactionRepository, never()).findByUserAndMonth(any(), anyInt(), anyInt());
     }
 
     @Test

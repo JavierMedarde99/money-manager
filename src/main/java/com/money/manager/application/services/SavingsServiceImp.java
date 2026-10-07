@@ -1,6 +1,7 @@
 package com.money.manager.application.services;
 
 import java.time.Clock;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,8 +55,23 @@ public class SavingsServiceImp implements SavingsService {
 
     @Override
     public void recalculateAll() {
-        // Implemented in Task 7 (scheduler retrospective pass).
-        throw new UnsupportedOperationException("not implemented");
+        List<User> users = transactionRepository.findUsersWithTransactions();
+        YearMonth currentMonth = YearMonth.now(clock);
+        for (User user : users) {
+            List<Transaction> transactions = transactionRepository.findByUser(user);
+            if (transactions.isEmpty()) {
+                continue;
+            }
+            YearMonth earliest = transactions.stream()
+                    .map(t -> YearMonth.from(t.getDateTransaction()))
+                    .min(YearMonth::compareTo)
+                    .orElse(currentMonth);
+            YearMonth cursor = earliest;
+            while (!cursor.isAfter(currentMonth)) {
+                recalculate(user, cursor.getYear(), cursor.getMonthValue());
+                cursor = cursor.plusMonths(1);
+            }
+        }
     }
 
     @Override

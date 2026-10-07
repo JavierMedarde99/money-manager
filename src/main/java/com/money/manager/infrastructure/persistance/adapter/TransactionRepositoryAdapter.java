@@ -53,6 +53,14 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
 
     @Override
     @Transactional(readOnly = true)
+    public List<com.money.manager.domain.User> findUsersWithTransactions() {
+        return jpa.findDistinctUsers().stream()
+                .map(com.money.manager.infrastructure.persistance.mapper.UserJpaMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean existsByUserCategoryNameAmountTypeSubtypeAndMonth(
             com.money.manager.domain.User user,
             com.money.manager.domain.Category category,

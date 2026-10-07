@@ -36,6 +36,9 @@ public interface PostgresTransactionRepository extends JpaRepository<Transaction
             @Param("year") int year,
             @Param("month") int month);
 
+    @Query("SELECT DISTINCT t.user FROM TransactionJpa t")
+    List<UserJpa> findDistinctUsers();
+
     @Query("""
         SELECT COUNT(t) > 0
         FROM TransactionJpa t
