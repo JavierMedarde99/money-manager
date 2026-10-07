@@ -45,8 +45,10 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
     @Override
     @Transactional(readOnly = true)
     public List<Transaction> findByUserAndMonth(com.money.manager.domain.User user, int year, int month) {
-        // Implemented in Task 2 (persistence task); stub keeps Task 1 compiling.
-        throw new UnsupportedOperationException("not implemented");
+        UserJpa userJpa = jpaUser.findById(user.getId())
+                .orElseThrow(() -> new IllegalStateException("user not found"));
+        return jpa.findByUser_IdAndYearAndMonth(userJpa, year, month).stream()
+                .map(TransactionJpaMapper::toDomain).toList();
     }
 
     @Override

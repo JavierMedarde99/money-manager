@@ -25,6 +25,18 @@ public interface PostgresTransactionRepository extends JpaRepository<Transaction
     List<TransactionJpa> findBySubtype(Subtype subtype);
 
     @Query("""
+        SELECT t
+        FROM TransactionJpa t
+        WHERE t.user = :user
+          AND EXTRACT(YEAR FROM t.dateTransaction) = :year
+          AND EXTRACT(MONTH FROM t.dateTransaction) = :month
+    """)
+    List<TransactionJpa> findByUser_IdAndYearAndMonth(
+            @Param("user") UserJpa user,
+            @Param("year") int year,
+            @Param("month") int month);
+
+    @Query("""
         SELECT COUNT(t) > 0
         FROM TransactionJpa t
         WHERE t.user = :user
