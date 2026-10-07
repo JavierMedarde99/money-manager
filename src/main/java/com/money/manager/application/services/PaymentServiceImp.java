@@ -24,6 +24,7 @@ import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.application.ports.CategoryService;
 import com.money.manager.application.ports.DebtService;
 import com.money.manager.application.ports.PaymentService;
+import com.money.manager.application.ports.SavingsService;
 import com.money.manager.application.dtos.PaymentRequestDTO;
 import com.money.manager.application.dtos.PaymentResponseDTO;
 
@@ -39,6 +40,7 @@ public class PaymentServiceImp implements PaymentService{
     private final CategoryService categoryService;
     private final TransactionRepository transactionRepository;
     private final Clock clock;
+    private final SavingsService savingsService;
 
     @Override
     @Transactional
@@ -76,7 +78,10 @@ public class PaymentServiceImp implements PaymentService{
                 .user(user)
                 .category(category)
                 .build();
-        return transactionRepository.save(transaction);
+        Transaction saved = transactionRepository.save(transaction);
+        savingsService.recalculate(user,
+                saved.getDateTransaction().getYear(), saved.getDateTransaction().getMonthValue());
+        return saved;
     }
 
     private void backfillAutomaticPayments(Payment original, Debt debt, User user) {
