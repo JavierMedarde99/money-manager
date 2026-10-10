@@ -3,6 +3,8 @@ package com.money.manager.infrastructure.persistance.adapter;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,12 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     @Transactional(readOnly = true)
     public List<Category> findByUser(com.money.manager.domain.User user) {
         return jpa.findByUser_Id(user.getId()).stream().map(CategoryJpaMapper::toDomain).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Category> findByUser(com.money.manager.domain.User user, Pageable pageable) {
+        return jpa.findByUser_Id(user.getId(), pageable).map(CategoryJpaMapper::toDomain);
     }
 
     @Override

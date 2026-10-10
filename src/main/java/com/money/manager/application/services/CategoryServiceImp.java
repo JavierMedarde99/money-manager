@@ -3,6 +3,7 @@ package com.money.manager.application.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.money.manager.application.mappers.CategoryMapper;
@@ -10,6 +11,9 @@ import com.money.manager.domain.Category;
 import com.money.manager.domain.CategoryRepository;
 import com.money.manager.domain.User;
 import com.money.manager.domain.exception.NotFoundException;
+import com.money.manager.domain.paging.Page;
+import com.money.manager.domain.paging.Pageable;
+import com.money.manager.domain.paging.SortDirection;
 import com.money.manager.application.ports.CategoryService;
 import com.money.manager.application.dtos.CategoryRequestDTO;
 import com.money.manager.application.dtos.CategoryResponseDTO;
@@ -24,9 +28,29 @@ public class CategoryServiceImp implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public List<CategoryResponseDTO> getCategoryByUser(User user) {
-        List<Category> getAllCategory = categoryRepository.findByUser(user);
-        return getAllCategory.stream().map(category -> CategoryMapper.toDto(category)).toList();
+    public Page<CategoryResponseDTO> getCategoryByUser(User user, Pageable pageable) {
+        Sort sort = pageable.direction() == SortDirection.DESC
+                ? Sort.by(sortProperty(pageable.sortBy())).descending()
+                : Sort.by(sortProperty(pageable.sortBy())).ascending();
+
+        org.springframework.data.domain.Pageable springPageable = org.springframework.data.domain.PageRequest.of(
+                pageable.page(), pageable.size(), sort);
+
+        org.springframework.data.domain.Page<Category> categories = categoryRepository.findByUser(user, springPageable);
+
+        List<CategoryResponseDTO> content = categories.getContent().stream()
+                .map(CategoryMapper::toDto).toList();
+
+        return Page.of(content, categories.getNumber(), categories.getSize(),
+                categories.getTotalElements(), categories.getTotalPages());
+    }
+
+    private static String sortProperty(String sortBy) {
+        return switch (sortBy) {
+            case "name" -> "name";
+            case "color" -> "color";
+            default -> "id";
+        };
     }
 
     @Override
