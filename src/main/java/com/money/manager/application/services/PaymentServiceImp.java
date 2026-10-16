@@ -130,6 +130,7 @@ public class PaymentServiceImp implements PaymentService{
     }
 
     @Override
+    @Transactional
     public PaymentResponseDTO updatePayment(PaymentRequestDTO paymentRequestDTO, Long id, User user) throws NotFoundException{
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         Payment payment = findById(id, user);
@@ -141,6 +142,7 @@ public class PaymentServiceImp implements PaymentService{
     }
 
     @Override
+    @Transactional
     public String deletePayment(Long id, User user) throws NotFoundException{
         Payment payment = findById(id, user);
         paymentRepository.delete(payment);

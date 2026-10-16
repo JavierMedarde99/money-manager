@@ -66,6 +66,7 @@ public class DebtServiceImp implements DebtService{
     }
 
     @Override
+    @Transactional
     public DebtResponseDTO updateDebt(DebtRequestDTO debtRequestDTO, Long id, User user) throws NotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         Debt debt = getDebtById(id, user);
@@ -78,6 +79,7 @@ public class DebtServiceImp implements DebtService{
     }
 
     @Override
+    @Transactional
     public String deleteDebt(Long id, User user) throws NotFoundException{
        Debt debt = getDebtById(id, user);
        debtRepository.delete(debt);

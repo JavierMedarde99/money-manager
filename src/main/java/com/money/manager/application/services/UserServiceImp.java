@@ -42,6 +42,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional
     public TokenResponseDTO createUser(final UserRequestDTO userRequestDTO) {
         User user = UserMapper.fromDto(userRequestDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));

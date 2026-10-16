@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.money.manager.application.dtos.SavingsResponseDTO;
 import com.money.manager.application.mappers.SavingsMapper;
@@ -28,6 +29,7 @@ public class SavingsServiceImp implements SavingsService {
     private final Clock clock;
 
     @Override
+    @Transactional
     public void recalculate(User user, int year, int month) {
         List<Transaction> transactions = transactionRepository.findByUserAndMonth(user, year, month);
         Optional<Savings> existing = savingsRepository.findByUserAndYearAndMonth(user, year, month);
