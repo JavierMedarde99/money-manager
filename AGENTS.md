@@ -62,7 +62,7 @@ infrastructure/   → Controllers, Spring Security, JPA repositories (adapters)
 - **`target/` is tracked in git** despite `.gitignore` listing it. This causes noisy diffs with `.class` files. Be aware but don't mass-remove without confirming with the team.
 - **`ExceptionHandlerController` catches `Exception.class`** — returns 500 for any unhandled exception including `NoResourceFoundException`. This makes 404s appear as 500s. Narrow the catch if needed.
 - **Tests are minimal** — only `contextLoads()` exists. It boots the full context (needs PostgreSQL). No unit tests yet.
-- **`application.properties` has a hardcoded JWT key** — fine for dev, must be externalized for prod.
+- **`application.properties` has a hardcoded JWT key fallback** (issue #91) — fine for dev/tests; production must set the `JWT_KEY` env var with a strong secret and the fallback should be removed before going live.
 - **`ddl-auto=update`** in dev profile — schema changes apply automatically on boot. Prod uses `validate`.
 
 ## Branch Convention
