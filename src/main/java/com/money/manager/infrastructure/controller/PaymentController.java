@@ -11,6 +11,7 @@ import com.money.manager.application.dtos.PaymentResponseDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/payment")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class PaymentController {
     private final PaymentService paymentService;
 

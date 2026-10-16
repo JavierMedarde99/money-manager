@@ -1,5 +1,6 @@
 package com.money.manager.infrastructure.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/category")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class CategoryController {
 
     private final CategoryService categoryService;

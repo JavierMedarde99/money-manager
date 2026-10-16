@@ -14,6 +14,7 @@ import com.money.manager.application.dtos.UserResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
@@ -43,16 +44,19 @@ public class UserController {
     }
     
     @GetMapping("")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponseDto> getUserController(Authentication authentication) {
         return ResponseEntity.ok(UserMapper.toDto((User) authentication.getPrincipal()));
     }
 
     @PutMapping("")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserResponseDto> updateUserConroller(@RequestBody @Valid UserRequestDTO userRequestDTO, Authentication authentication) {
         return ResponseEntity.ok(userService.updateUser(userRequestDTO, (User) authentication.getPrincipal()));
     }
 
     @DeleteMapping("")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deleteUserController(Authentication authentication){
         userService.deleteUser((User) authentication.getPrincipal());
         return ResponseEntity.noContent().build();

@@ -3,6 +3,7 @@ package com.money.manager.infrastructure.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("savings")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class SavingsController {
 
     private final SavingsService savingsService;
