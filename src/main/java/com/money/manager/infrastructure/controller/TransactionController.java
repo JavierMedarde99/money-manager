@@ -1,5 +1,6 @@
 package com.money.manager.infrastructure.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.money.manager.domain.User;
@@ -36,6 +37,7 @@ import com.money.manager.domain.paging.SortDirection;
 @RequestMapping("transaction")
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class TransactionController {
     private final TransactionService transactionService;
 
