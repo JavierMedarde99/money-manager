@@ -3,6 +3,7 @@ package com.money.manager.application.services;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -78,6 +79,18 @@ class SavingsServiceImpTest {
         assert saved.getYear() == 2026;
         assert saved.getMonth() == 9;
         assert saved.getId() == null;
+    }
+
+    @Test
+    void recalculate_isScopedToTheRequestedUser() {
+        when(transactionRepository.findByUserAndMonth(user, 2026, 9)).thenReturn(List.of());
+        when(savingsRepository.findByUserAndYearAndMonth(user, 2026, 9)).thenReturn(Optional.empty());
+
+        service.recalculate(user, 2026, 9);
+
+        verify(transactionRepository).findByUserAndMonth(same(user), eq(2026), eq(9));
+        verify(savingsRepository).findByUserAndYearAndMonth(same(user), eq(2026), eq(9));
+        verify(savingsRepository, never()).findByUser(any());
     }
 
     @Test
