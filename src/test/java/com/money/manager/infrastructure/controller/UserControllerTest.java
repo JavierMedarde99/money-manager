@@ -167,6 +167,20 @@ class UserControllerTest {
     }
 
     @Test
+    void createUser_withoutPassword_returns400WithValidationMessage() throws Exception {
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"username":"new-javi","email":"new@mail.com"}
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.startsWith("invalid body:")));
+
+        verify(userService, never()).createUser(any());
+    }
+
+    @Test
     void getUser_returnsPrincipalData() throws Exception {
         mockMvc.perform(get("/user").with(authentication(auth())))
                 .andExpect(status().isOk())

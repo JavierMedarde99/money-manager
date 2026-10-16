@@ -14,6 +14,7 @@ import com.money.manager.application.dtos.UserResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,8 @@ public class UserController {
     }
     
     @PostMapping("")
-    public ResponseEntity<TokenResponseDTO> insertUserController(@RequestBody @Valid UserRequestDTO userRequestDTO) {
+    public ResponseEntity<TokenResponseDTO> insertUserController(
+            @RequestBody @Validated(UserRequestDTO.OnCreate.class) UserRequestDTO userRequestDTO) {
         return ResponseEntity.ok(userService.createUser(userRequestDTO));
     }
     
