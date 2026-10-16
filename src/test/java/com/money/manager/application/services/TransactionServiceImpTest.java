@@ -265,6 +265,8 @@ class TransactionServiceImpTest {
         assertThatThrownBy(() -> transactionService.getTransaction(99L, user))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("transaction not found");
+
+        verify(transactionRepository, never()).findById(any());
     }
 
     @Test
@@ -303,6 +305,7 @@ class TransactionServiceImpTest {
                 .hasMessage("transaction not found");
 
         verify(transactionRepository, never()).save(any());
+        verify(transactionRepository, never()).findById(any());
     }
 
     @Test
@@ -323,6 +326,7 @@ class TransactionServiceImpTest {
                 .isInstanceOf(NotFoundException.class);
 
         verify(transactionRepository, never()).delete(any());
+        verify(transactionRepository, never()).findById(any());
     }
 
     @Test

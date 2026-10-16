@@ -132,6 +132,30 @@ class DebtServiceImpTest {
                 .isInstanceOf(NotFoundException.class);
 
         verify(paymentRepository, never()).findByDebt_Id(any(), any());
+        verify(debtRepository, never()).findById(any());
+    }
+
+    @Test
+    void updateDebt_ofAnotherUser_throwsNotFound() {
+        when(debtRepository.findByIdAndUser_Id(10L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> debtService.updateDebt(
+                new DebtRequestDTO("Car", 4000.0, "2026-01-01", null), 10L, user))
+                .isInstanceOf(NotFoundException.class);
+
+        verify(debtRepository, never()).save(any());
+        verify(debtRepository, never()).findById(any());
+    }
+
+    @Test
+    void deleteDebt_ofAnotherUser_throwsNotFound() {
+        when(debtRepository.findByIdAndUser_Id(10L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> debtService.deleteDebt(10L, user))
+                .isInstanceOf(NotFoundException.class);
+
+        verify(debtRepository, never()).delete(any());
+        verify(debtRepository, never()).findById(any());
     }
 
     @Test

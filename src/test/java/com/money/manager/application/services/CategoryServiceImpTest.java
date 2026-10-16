@@ -1,12 +1,15 @@
 package com.money.manager.application.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,10 +23,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import com.money.manager.application.dtos.CategoryRequestDTO;
 import com.money.manager.application.dtos.CategoryResponseDTO;
 import com.money.manager.domain.Category;
 import com.money.manager.domain.CategoryRepository;
 import com.money.manager.domain.User;
+import com.money.manager.domain.exception.NotFoundException;
 import com.money.manager.domain.paging.Page;
 import com.money.manager.domain.paging.Pageable;
 import com.money.manager.domain.paging.SortDirection;
@@ -112,5 +117,49 @@ class CategoryServiceImpTest {
         verify(categoryRepository).findByUser(eq(user), springPageableCaptor.capture());
         assertThat(springPageableCaptor.getValue().getSort().getOrderFor("id").getDirection())
                 .isEqualTo(Sort.Direction.ASC);
+    }
+
+    @Test
+    void getCategory_ofOwningUser_usesUserScopedLookup() throws NotFoundException {
+        when(categoryRepository.findByIdAndUser_Id(5L, 1L)).thenReturn(Optional.of(category));
+
+        CategoryResponseDTO result = categoryService.getCategory(5L, user);
+
+        assertThat(result.id()).isEqualTo(5L);
+        assertThat(result.name()).isEqualTo("Salary");
+        verify(categoryRepository, never()).findById(any());
+    }
+
+    @Test
+    void getCategory_ofAnotherUser_throwsNotFound() {
+        when(categoryRepository.findByIdAndUser_Id(5L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.getCategory(5L, user))
+                .isInstanceOf(NotFoundException.class);
+
+        verify(categoryRepository, never()).findById(any());
+    }
+
+    @Test
+    void updateCategory_ofAnotherUser_throwsNotFound() {
+        when(categoryRepository.findByIdAndUser_Id(5L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.updateCategory(
+                new CategoryRequestDTO("Salary", "#00FF00"), 5L, user))
+                .isInstanceOf(NotFoundException.class);
+
+        verify(categoryRepository, never()).save(any());
+        verify(categoryRepository, never()).findById(any());
+    }
+
+    @Test
+    void deleteCategory_ofAnotherUser_throwsNotFound() {
+        when(categoryRepository.findByIdAndUser_Id(5L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.deleteCategory(5L, user))
+                .isInstanceOf(NotFoundException.class);
+
+        verify(categoryRepository, never()).delete(any());
+        verify(categoryRepository, never()).findById(any());
     }
 }

@@ -307,5 +307,30 @@ class PaymentServiceImpTest {
 
         assertThatThrownBy(() -> paymentService.getPayment(50L, user))
                 .isInstanceOf(NotFoundException.class);
+
+        verify(paymentRepository, never()).findById(any());
+    }
+
+    @Test
+    void updatePayment_ofAnotherUser_throwsNotFound() {
+        when(paymentRepository.findByIdAndDebt_User_Id(50L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> paymentService.updatePayment(
+                new PaymentRequestDTO("2026-02-15", 600.0, false, null), 50L, user))
+                .isInstanceOf(NotFoundException.class);
+
+        verify(paymentRepository, never()).save(any());
+        verify(paymentRepository, never()).findById(any());
+    }
+
+    @Test
+    void deletePayment_ofAnotherUser_throwsNotFound() {
+        when(paymentRepository.findByIdAndDebt_User_Id(50L, 1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> paymentService.deletePayment(50L, user))
+                .isInstanceOf(NotFoundException.class);
+
+        verify(paymentRepository, never()).delete(any());
+        verify(paymentRepository, never()).findById(any());
     }
 }

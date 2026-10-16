@@ -124,6 +124,7 @@ public class TransactionServiceImp implements TransactionService {
     }
 
     @Override
+    @Transactional
     public TransactionResponseDTO updateTransaction(TransactionRequestDTO transactionRequestDTO, Long transactionId,User user) throws NotFoundException {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
         Transaction transaction = findById(transactionId, user);
@@ -146,6 +147,7 @@ public class TransactionServiceImp implements TransactionService {
     }
 
     @Override
+    @Transactional
     public String deleteTransaction(Long transactionId, User user) throws NotFoundException{
         Transaction transaction = findById(transactionId, user);
         YearMonth deletedMonth = YearMonth.from(transaction.getDateTransaction());

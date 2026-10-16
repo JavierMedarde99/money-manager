@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -23,7 +24,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "debts")
+@Table(name = "debts", indexes = {
+        @Index(name = "idx_debts_user_id", columnList = "user_id")
+})
 public class DebtJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
