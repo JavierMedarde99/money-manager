@@ -75,6 +75,7 @@ public class CategoryServiceImp implements CategoryService {
     private static final String PAYMENT_CATEGORY_COLOR = "#000000";
 
     @Override
+    @Transactional
     public Category findOrCreatePaymentCategory(User user) {
         return categoryRepository.findByNameAndUser_Id(PAYMENT_CATEGORY_NAME, user.getId())
                 .orElseGet(() -> categoryRepository.save(
@@ -97,6 +98,7 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
+    @Transactional
     public String deleteCategory(Long categoryId, User user) throws NotFoundException{
         Category category = findCategoryById(categoryId, user);
         categoryRepository.delete(category);
